@@ -14,14 +14,14 @@ export const WelcomeHeader: React.FC<WelcomeHeaderProps> = ({
   const _styles = createStyles(theme);
   
   return (
-    <View style={localStyles.container}>
-      <Text style={localStyles.brandName}>Bags</Text>
+    <View style={localStyles.container} testID="welcome-header-container" accessibilityLabel="welcome-header-container">
+      <Text style={localStyles.brandName} testID="welcome-brand-name" accessibilityLabel="welcome-brand-name">Bags</Text>
       
-      <Text style={localStyles.title}>
+      <Text style={localStyles.title} testID="welcome-title" accessibilityLabel="welcome-title">
         {title}
       </Text>
       
-      <Text style={localStyles.subtitle}>
+      <Text style={localStyles.subtitle} testID="welcome-subtitle" accessibilityLabel="welcome-subtitle">
         {subtitle}
       </Text>
     </View>

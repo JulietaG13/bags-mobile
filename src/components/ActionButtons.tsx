@@ -18,13 +18,15 @@ export const ActionButtons: React.FC<ActionButtonsProps> = ({
   const _styles = createStyles(theme);
 
   return (
-    <View style={localStyles.container}>
+    <View style={localStyles.container} testID="welcome-actions-container" accessibilityLabel="welcome-actions-container">
       <TouchableOpacity 
         style={[localStyles.primaryButton]} 
         onPress={onGetStarted}
         activeOpacity={0.8}
+        testID="welcome-get-started-button"
+        accessibilityLabel="welcome-get-started-button"
       >
-        <Text style={localStyles.primaryButtonText}>
+        <Text style={localStyles.primaryButtonText} testID="welcome-get-started-text" accessibilityLabel="welcome-get-started-text">
           {primaryText}
         </Text>
       </TouchableOpacity>
@@ -33,8 +35,10 @@ export const ActionButtons: React.FC<ActionButtonsProps> = ({
         style={[localStyles.secondaryButton]} 
         onPress={onSignIn}
         activeOpacity={0.8}
+        testID="welcome-sign-in-button"
+        accessibilityLabel="welcome-sign-in-button"
       >
-        <Text style={localStyles.secondaryButtonText}>
+        <Text style={localStyles.secondaryButtonText} testID="welcome-sign-in-text" accessibilityLabel="welcome-sign-in-text">
           {secondaryText}
         </Text>
       </TouchableOpacity>

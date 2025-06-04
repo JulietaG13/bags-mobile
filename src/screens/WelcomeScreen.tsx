@@ -51,14 +51,16 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
             bounces={true}
             contentContainerStyle={localStyles.scrollContent}
             decelerationRate="fast"
+            testID="welcome-scroll-view"
+            accessibilityLabel="welcome-scroll-view"
           >
             {/* Hero Section */}
-            <View style={localStyles.heroSection}>
+            <View style={localStyles.heroSection} testID="welcome-hero-section" accessibilityLabel="welcome-hero-section">
               <WelcomeHeader />
             </View>
 
             {/* Action Buttons */}
-            <View style={localStyles.actionsSection}>
+            <View style={localStyles.actionsSection} testID="welcome-actions-section" accessibilityLabel="welcome-actions-section">
               <ActionButtons 
                 onGetStarted={onGetStarted}
                 onSignIn={onSignIn}
