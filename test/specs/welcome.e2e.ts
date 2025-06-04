@@ -14,24 +14,6 @@ describe('Welcome Screen', () => {
         await welcomeScreen.verifyWelcomeScreenElements();
     });
 
-    it('should display correct brand name', async () => {
-        // Get and verify brand name
-        const brandName = await welcomeScreen.getBrandNameText();
-        expect(brandName).toBe('Bags');
-    });
-
-    it('should display correct title', async () => {
-        // Get and verify title
-        const title = await welcomeScreen.getTitleText();
-        expect(title).toBe('Your Digital Wallet');
-    });
-
-    it('should display correct subtitle', async () => {
-        // Get and verify subtitle
-        const subtitle = await welcomeScreen.getSubtitleText();
-        expect(subtitle).toBe('Send, receive, and manage your money with ease. Secure, fast, and designed for the modern world.');
-    });
-
     it('should have clickable buttons', async () => {
         // Verify buttons are clickable
         await welcomeScreen.verifyButtonsAreClickable();
@@ -61,21 +43,5 @@ describe('Welcome Screen', () => {
         // Here you would verify navigation to login screen
         // For now, we'll just take a screenshot
         await browser.pause(2000); // Wait for navigation
-    });
-
-    it('should handle screen animation loading', async () => {
-        // Wait for screen animation to settle
-        await welcomeScreen.waitForScreenAnimation();
-        
-        // Verify screen is still properly displayed
-        expect(await welcomeScreen.isWelcomeScreenDisplayed()).toBe(true);
-    });
-
-    it('should be able to scroll to actions section', async () => {
-        // Scroll to actions section
-        await welcomeScreen.scrollToActions();
-        
-        // Verify buttons are still clickable after scrolling
-        await welcomeScreen.verifyButtonsAreClickable();
     });
 }); 

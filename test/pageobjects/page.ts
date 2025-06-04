@@ -28,21 +28,12 @@ export default class Page {
             const appId = process.env.APP_PACKAGE;
             if (!appId) throw new Error('APP_PACKAGE not set in .env');
 
-            // Instead of aggressive app reset, try gentler approach
-            console.log('Attempting gentle app reset...');
-            
-            // Only clear app if absolutely necessary, and do it gently
-            try {
-                await browser.execute('mobile: activateApp', { appId });
-                await this.waitForAppReady();
-            } catch (activateError) {
-                console.log('App activation failed, trying clearApp as fallback:', activateError.message);
-                await browser.execute('mobile: clearApp', { appId });
-                await this.waitForAppReady();
-            }
-            
+            await browser.execute('mobile: clearApp', { appId });
+            await browser.pause(2000);
+            await browser.execute('mobile: activateApp', { appId });
+            await this.waitForAppReady();
+
             console.log('App should be ready for testing');
-            
         } catch (error) {
             console.log('Error in goToWelcomeScreen:', error.message);
             throw error;

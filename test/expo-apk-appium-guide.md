@@ -65,3 +65,10 @@ Make sure to use an **absolute path** like:
 
 - Do **not** use `.aab` files with Appium — only `.apk` is supported.
 - Use `adb install path-to-apk` to manually reinstall the app on the emulator.
+
+
+### Run Welcome screen test
+
+```bash
+npx wdio run wdio.conf.ts --spec ./test/specs/welcome.e2e.ts
+```
