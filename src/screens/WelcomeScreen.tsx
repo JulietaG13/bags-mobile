@@ -13,7 +13,7 @@ import { theme, createStyles, createScreenStyles } from '../constants';
 import WelcomeHeader from '../components/WelcomeHeader';
 import ActionButtons from '../components/ActionButtons';
 
-const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
+const { width: _, height: screenHeight } = Dimensions.get('window');
 
 interface WelcomeScreenProps {
   onGetStarted?: () => void;
@@ -24,8 +24,8 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
   onGetStarted,
   onSignIn,
 }) => {
-  const styles = createStyles(theme);
-  const screenStyles = createScreenStyles(theme);
+  const _styles = createStyles(theme);
+  const _screenStyles = createScreenStyles(theme);
 
   return (
     <>

@@ -13,7 +13,7 @@ export const TopNavigation: React.FC<TopNavigationProps> = ({
   onRegister,
   showAuth = true,
 }) => {
-  const styles = createStyles(theme);
+  const _styles = createStyles(theme);
 
   return (
     <SafeAreaView style={localStyles.safeArea}>

@@ -15,7 +15,7 @@ export const ActionButtons: React.FC<ActionButtonsProps> = ({
   primaryText = "Get Started",
   secondaryText = "Already have an account?",
 }) => {
-  const styles = createStyles(theme);
+  const _styles = createStyles(theme);
 
   return (
     <View style={localStyles.container}>

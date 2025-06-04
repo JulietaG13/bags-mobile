@@ -27,3 +27,6 @@ jobs:
 
       - name: Install Expo CLI
         run: npm install -g expo-cli
+
+      - name: Run lint
+        run: npm run lint

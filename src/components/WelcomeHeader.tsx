@@ -11,7 +11,7 @@ export const WelcomeHeader: React.FC<WelcomeHeaderProps> = ({
   title = "Your Digital Wallet",
   subtitle = "Send, receive, and manage your money with ease. Secure, fast, and designed for the modern world.",
 }) => {
-  const styles = createStyles(theme);
+  const _styles = createStyles(theme);
   
   return (
     <View style={localStyles.container}>
