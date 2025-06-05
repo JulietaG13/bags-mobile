@@ -3,7 +3,9 @@ name: Tag and Build Expo App
 on:
   workflow_run:
     workflows: ["CI-CodeCheck"]
-    types: [completed]
+    branches: ["main"]
+    types:
+      - completed
 
 permissions:
   contents: write
