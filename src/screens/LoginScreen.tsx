@@ -8,7 +8,9 @@ import {
   KeyboardAvoidingView,
   Platform,
   Text,
-  BackHandler
+  BackHandler,
+  ScrollView,
+  Keyboard
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { theme } from '../constants';
@@ -34,6 +36,22 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [keyboardVisible, setKeyboardVisible] = useState(false);
+
+  // Handle keyboard visibility
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
+      setKeyboardVisible(true);
+    });
+    const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => {
+      setKeyboardVisible(false);
+    });
+
+    return () => {
+      keyboardDidShowListener.remove();
+      keyboardDidHideListener.remove();
+    };
+  }, []);
 
   // Handle back button
   useEffect(() => {
@@ -124,66 +142,80 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
         >
           <KeyboardAvoidingView 
             style={localStyles.keyboardView}
-            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+            keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 0}
           >
-            <View style={localStyles.container}>
-              {/* Header Section */}
-              <View style={localStyles.headerSection}>
-                <FormHeader
-                  title="Welcome Back"
-                  subtitle="Sign in to your Bags account to continue managing your finances"
-                  showBackButton={true}
-                  onBackPress={onBackToWelcome}
-                />
+            <ScrollView 
+              style={localStyles.scrollView}
+              contentContainerStyle={[
+                localStyles.scrollContentContainer,
+                keyboardVisible && localStyles.scrollContentContainerKeyboard
+              ]}
+              showsVerticalScrollIndicator={false}
+              keyboardShouldPersistTaps="handled"
+              bounces={false}
+              automaticallyAdjustKeyboardInsets={true}
+              contentInsetAdjustmentBehavior="automatic"
+            >
+              <View style={localStyles.container}>
+                {/* Header Section */}
+                <View style={localStyles.headerSection}>
+                  <FormHeader
+                    title="Welcome Back"
+                    subtitle="Sign in to your Bags account to continue managing your finances"
+                    showBackButton={true}
+                    onBackPress={onBackToWelcome}
+                  />
+                </View>
+
+                {/* Spacer to push form to bottom */}
+                <View style={localStyles.spacer} />
+
+                {/* Form Section - Fixed at bottom */}
+                <FormContainer style={localStyles.bottomFormContainer}>
+                  <InputField
+                    label="Email Address"
+                    value={formData.email}
+                    onChangeText={(value) => updateField('email', value)}
+                    error={errors.email}
+                    placeholder="Enter your email"
+                    keyboardType="email-address"
+                    autoCapitalize="none"
+                    autoComplete="email"
+                  />
+
+                  <PasswordField
+                    label="Password"
+                    value={formData.password}
+                    onChangeText={(value) => updateField('password', value)}
+                    error={errors.password}
+                    placeholder="Enter your password"
+                    showStrengthIndicator={false}
+                  />
+
+                  {/* Show API error if exists */}
+                  {error && (
+                    <View style={localStyles.errorContainer}>
+                      <Text style={localStyles.apiErrorText}>{error}</Text>
+                    </View>
+                  )}
+
+                  <FormButton
+                    title="Sign In"
+                    onPress={handleLogin}
+                    loading={loading}
+                    variant="primary"
+                    style={localStyles.loginButton}
+                  />
+
+                  <FormButton
+                    title="Don't have an account? Sign Up"
+                    onPress={onGoToRegister}
+                    variant="text"
+                  />
+                </FormContainer>
               </View>
-
-              {/* Spacer to push form to bottom */}
-              <View style={localStyles.spacer} />
-
-              {/* Form Section - Fixed at bottom */}
-              <FormContainer style={localStyles.bottomFormContainer}>
-                <InputField
-                  label="Email Address"
-                  value={formData.email}
-                  onChangeText={(value) => updateField('email', value)}
-                  error={errors.email}
-                  placeholder="Enter your email"
-                  keyboardType="email-address"
-                  autoCapitalize="none"
-                  autoComplete="email"
-                />
-
-                <PasswordField
-                  label="Password"
-                  value={formData.password}
-                  onChangeText={(value) => updateField('password', value)}
-                  error={errors.password}
-                  placeholder="Enter your password"
-                  showStrengthIndicator={false}
-                />
-
-                {/* Show API error if exists */}
-                {error && (
-                  <View style={localStyles.errorContainer}>
-                    <Text style={localStyles.apiErrorText}>{error}</Text>
-                  </View>
-                )}
-
-                <FormButton
-                  title="Sign In"
-                  onPress={handleLogin}
-                  loading={loading}
-                  variant="primary"
-                  style={localStyles.loginButton}
-                />
-
-                <FormButton
-                  title="Don't have an account? Sign Up"
-                  onPress={onGoToRegister}
-                  variant="text"
-                />
-              </FormContainer>
-            </View>
+            </ScrollView>
           </KeyboardAvoidingView>
         </LinearGradient>
       </SafeAreaView>
@@ -201,6 +233,15 @@ const localStyles = StyleSheet.create({
   },
   keyboardView: {
     flex: 1,
+  },
+  scrollView: {
+    flex: 1,
+  },
+  scrollContentContainer: {
+    flexGrow: 1,
+  },
+  scrollContentContainerKeyboard: {
+    paddingBottom: 150, // Extra space when keyboard is open
   },
   container: {
     flex: 1,

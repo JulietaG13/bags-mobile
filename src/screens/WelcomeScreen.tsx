@@ -13,7 +13,7 @@ import { theme, createStyles, createScreenStyles } from '../constants';
 import WelcomeHeader from '../components/WelcomeHeader';
 import ActionButtons from '../components/ActionButtons';
 
-const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
+const { width: _, height: screenHeight } = Dimensions.get('window');
 
 interface WelcomeScreenProps {
   onGetStarted?: () => void;
@@ -24,8 +24,8 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
   onGetStarted,
   onSignIn,
 }) => {
-  const styles = createStyles(theme);
-  const screenStyles = createScreenStyles(theme);
+  const _styles = createStyles(theme);
+  const _screenStyles = createScreenStyles(theme);
 
   return (
     <>
@@ -51,14 +51,16 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
             bounces={true}
             contentContainerStyle={localStyles.scrollContent}
             decelerationRate="fast"
+            testID="welcome-scroll-view"
+            accessibilityLabel="welcome-scroll-view"
           >
             {/* Hero Section */}
-            <View style={localStyles.heroSection}>
+            <View style={localStyles.heroSection} testID="welcome-hero-section" accessibilityLabel="welcome-hero-section">
               <WelcomeHeader />
             </View>
 
             {/* Action Buttons */}
-            <View style={localStyles.actionsSection}>
+            <View style={localStyles.actionsSection} testID="welcome-actions-section" accessibilityLabel="welcome-actions-section">
               <ActionButtons 
                 onGetStarted={onGetStarted}
                 onSignIn={onSignIn}
