@@ -1,46 +1,44 @@
 import { useState } from 'react';
 import { API_CONFIG, getBaseUrl } from '../config/api';
-
-export interface RegisterData {
-  email: string;
-  password: string;
-}
-
-export interface LoginData {
-  email: string;
-  password: string;
-}
-
-export interface AuthResponse {
-  success: boolean;
-  message: string;
-  user?: {
-    id: string;
-    email: string;
-    token: string;
-  };
-}
+import { 
+  CreateWalletRequest, 
+  AuthRequest, 
+  AuthResponse,
+  prepareCreateWalletRequest 
+} from '../types/dtos';
 
 export const useAuth = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const register = async (data: RegisterData): Promise<AuthResponse> => {
+  const getApiUrl = (endpoint: string) => {
+    const baseUrl = getBaseUrl();
+    const fullUrl = `${baseUrl}${endpoint}`;
+    console.log(`API Request to: ${fullUrl}`);
+    return fullUrl;
+  };
+
+  const register = async (data: CreateWalletRequest): Promise<AuthResponse> => {
     setLoading(true);
     setError(null);
 
     try {
-      const response = await fetch(`${getBaseUrl()}${API_CONFIG.ENDPOINTS.AUTH.REGISTER}`, {
+      const requestData = prepareCreateWalletRequest(data);
+      
+      const apiUrl = getApiUrl(API_CONFIG.ENDPOINTS.AUTH.REGISTER);
+      console.log('Registering user with BASE_URL:', getBaseUrl());
+      
+      const response = await fetch(apiUrl, {
         method: 'POST',
         headers: API_CONFIG.HEADERS,
-        body: JSON.stringify(data),
+        body: JSON.stringify(requestData),
         signal: AbortSignal.timeout(API_CONFIG.TIMEOUT.DEFAULT),
       });
 
-      const result = await response.json();
+      const result: AuthResponse = await response.json();
 
       if (!response.ok) {
-        throw new Error(result.message || 'Registration failed');
+        throw new Error('Registration failed');
       }
 
       setLoading(false);
@@ -58,28 +56,32 @@ export const useAuth = () => {
         }
       }
       
+      console.error('Registration error:', errorMessage, 'BASE_URL:', getBaseUrl());
       setError(errorMessage);
       setLoading(false);
       throw new Error(errorMessage);
     }
   };
 
-  const login = async (data: LoginData): Promise<AuthResponse> => {
+  const login = async (data: AuthRequest): Promise<AuthResponse> => {
     setLoading(true);
     setError(null);
 
     try {
-      const response = await fetch(`${getBaseUrl()}${API_CONFIG.ENDPOINTS.AUTH.LOGIN}`, {
+      const apiUrl = getApiUrl(API_CONFIG.ENDPOINTS.AUTH.LOGIN);
+      console.log('Logging in user with BASE_URL:', getBaseUrl());
+      
+      const response = await fetch(apiUrl, {
         method: 'POST',
         headers: API_CONFIG.HEADERS,
         body: JSON.stringify(data),
         signal: AbortSignal.timeout(API_CONFIG.TIMEOUT.DEFAULT),
       });
 
-      const result = await response.json();
+      const result: AuthResponse = await response.json();
 
       if (!response.ok) {
-        throw new Error(result.message || 'Login failed');
+        throw new Error('Login failed');
       }
 
       setLoading(false);
@@ -97,6 +99,7 @@ export const useAuth = () => {
         }
       }
       
+      console.error('Login error:', errorMessage, 'BASE_URL:', getBaseUrl());
       setError(errorMessage);
       setLoading(false);
       throw new Error(errorMessage);
@@ -107,12 +110,17 @@ export const useAuth = () => {
     setError(null);
   };
 
+  const getCurrentBaseUrl = () => {
+    return getBaseUrl();
+  };
+
   return {
     register,
     login,
     loading,
     error,
     clearError,
+    getCurrentBaseUrl,
   };
 };
 
