@@ -1,4 +1,3 @@
-
 export interface CreateWalletRequest {
   /** Email must not be blank and must be a valid email address */
   email: string;
@@ -14,7 +13,9 @@ export interface AuthRequest {
 }
 
 export interface AuthResponse {
+  success: boolean;
   token: string;
+  message?: string;
 }
 
 export const ValidationRules = {

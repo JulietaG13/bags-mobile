@@ -8,7 +8,8 @@ import {
   KeyboardAvoidingView,
   Platform,
   Text,
-  BackHandler
+  BackHandler,
+  ScrollView
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { theme } from '../constants';
@@ -135,73 +136,80 @@ export const RegisterScreen: React.FC<RegisterScreenProps> = ({
             style={localStyles.keyboardView}
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
           >
-            <View style={localStyles.container}>
-              {/* Header Section */}
-              <View style={localStyles.headerSection}>
-                <FormHeader
-                  title="Create Account"
-                  subtitle="Join thousands of users managing their finances with Bags"
-                  showBackButton={true}
-                  onBackPress={onBackToWelcome}
-                />
+            <ScrollView 
+              style={localStyles.scrollView}
+              contentContainerStyle={localStyles.scrollContentContainer}
+              showsVerticalScrollIndicator={false}
+              keyboardShouldPersistTaps="handled"
+            >
+              <View style={localStyles.container}>
+                {/* Header Section */}
+                <View style={localStyles.headerSection}>
+                  <FormHeader
+                    title="Create Account"
+                    subtitle="Join thousands of users managing their finances with Bags"
+                    showBackButton={true}
+                    onBackPress={onBackToWelcome}
+                  />
+                </View>
+
+                {/* Spacer to push form to bottom */}
+                <View style={localStyles.spacer} />
+
+                {/* Form Section - Fixed at bottom */}
+                <FormContainer style={localStyles.bottomFormContainer}>
+                  <InputField
+                    label="Email Address"
+                    value={formData.email}
+                    onChangeText={(value) => updateField('email', value)}
+                    error={errors.email}
+                    placeholder="Enter your email"
+                    keyboardType="email-address"
+                    autoCapitalize="none"
+                    autoComplete="email"
+                  />
+
+                  <PasswordField
+                    label="Password"
+                    value={formData.password}
+                    onChangeText={(value) => updateField('password', value)}
+                    error={errors.password}
+                    placeholder="Create a strong password"
+                    showStrengthIndicator={true}
+                  />
+
+                  <PasswordField
+                    label="Confirm Password"
+                    value={formData.confirmPassword}
+                    onChangeText={(value) => updateField('confirmPassword', value)}
+                    error={errors.confirmPassword}
+                    placeholder="Confirm your password"
+                    showStrengthIndicator={false}
+                  />
+
+                  {/* Show API error if exists */}
+                  {error && (
+                    <View style={localStyles.errorContainer}>
+                      <Text style={localStyles.apiErrorText}>{error}</Text>
+                    </View>
+                  )}
+
+                  <FormButton
+                    title="Create Account"
+                    onPress={handleRegister}
+                    loading={loading}
+                    variant="primary"
+                    style={localStyles.createButton}
+                  />
+
+                  <FormButton
+                    title="Already have an account? Sign In"
+                    onPress={onGoToLogin}
+                    variant="text"
+                  />
+                </FormContainer>
               </View>
-
-              {/* Spacer to push form to bottom */}
-              <View style={localStyles.spacer} />
-
-              {/* Form Section - Fixed at bottom */}
-              <FormContainer style={localStyles.bottomFormContainer}>
-                <InputField
-                  label="Email Address"
-                  value={formData.email}
-                  onChangeText={(value) => updateField('email', value)}
-                  error={errors.email}
-                  placeholder="Enter your email"
-                  keyboardType="email-address"
-                  autoCapitalize="none"
-                  autoComplete="email"
-                />
-
-                <PasswordField
-                  label="Password"
-                  value={formData.password}
-                  onChangeText={(value) => updateField('password', value)}
-                  error={errors.password}
-                  placeholder="Create a strong password"
-                  showStrengthIndicator={true}
-                />
-
-                <PasswordField
-                  label="Confirm Password"
-                  value={formData.confirmPassword}
-                  onChangeText={(value) => updateField('confirmPassword', value)}
-                  error={errors.confirmPassword}
-                  placeholder="Confirm your password"
-                  showStrengthIndicator={false}
-                />
-
-                {/* Show API error if exists */}
-                {error && (
-                  <View style={localStyles.errorContainer}>
-                    <Text style={localStyles.apiErrorText}>{error}</Text>
-                  </View>
-                )}
-
-                <FormButton
-                  title="Create Account"
-                  onPress={handleRegister}
-                  loading={loading}
-                  variant="primary"
-                  style={localStyles.createButton}
-                />
-
-                <FormButton
-                  title="Already have an account? Sign In"
-                  onPress={onGoToLogin}
-                  variant="text"
-                />
-              </FormContainer>
-            </View>
+            </ScrollView>
           </KeyboardAvoidingView>
         </LinearGradient>
       </SafeAreaView>
@@ -219,6 +227,12 @@ const localStyles = StyleSheet.create({
   },
   keyboardView: {
     flex: 1,
+  },
+  scrollView: {
+    flex: 1,
+  },
+  scrollContentContainer: {
+    flexGrow: 1,
   },
   container: {
     flex: 1,

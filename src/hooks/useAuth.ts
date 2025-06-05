@@ -5,7 +5,17 @@ import {
   AuthRequest, 
   AuthResponse,
   prepareCreateWalletRequest 
-} from '../types/dtos';
+} from '../types';
+
+const createTimeoutController = (timeoutMs: number) => {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+  
+  const originalSignal = controller.signal;
+  const cleanup = () => clearTimeout(timeoutId);
+  
+  return { signal: originalSignal, cleanup };
+};
 
 export const useAuth = () => {
   const [loading, setLoading] = useState(false);
@@ -22,6 +32,8 @@ export const useAuth = () => {
     setLoading(true);
     setError(null);
 
+    const { signal, cleanup } = createTimeoutController(API_CONFIG.TIMEOUT.DEFAULT);
+
     try {
       const requestData = prepareCreateWalletRequest(data);
       
@@ -32,18 +44,34 @@ export const useAuth = () => {
         method: 'POST',
         headers: API_CONFIG.HEADERS,
         body: JSON.stringify(requestData),
-        signal: AbortSignal.timeout(API_CONFIG.TIMEOUT.DEFAULT),
+        signal,
       });
 
-      const result: AuthResponse = await response.json();
+      cleanup(); // Clean up timeout since request completed
 
       if (!response.ok) {
-        throw new Error('Registration failed');
+        let errorMessage = `Registration failed with status ${response.status}`;
+        try {
+          const errorData = await response.json();
+          if (errorData.message) {
+            errorMessage = errorData.message;
+          }
+        } catch {
+          // Ignore JSON parsing errors for error responses
+        }
+        throw new Error(errorMessage);
       }
 
+      const authResponse: AuthResponse = {
+        success: true,
+        token: '', // No token in register response
+        message: 'Registration successful'
+      };
+
       setLoading(false);
-      return result;
+      return authResponse;
     } catch (err) {
+      cleanup(); // Clean up timeout on error
       let errorMessage = 'Network error occurred';
       
       if (err instanceof Error) {
@@ -67,6 +95,8 @@ export const useAuth = () => {
     setLoading(true);
     setError(null);
 
+    const { signal, cleanup } = createTimeoutController(API_CONFIG.TIMEOUT.DEFAULT);
+
     try {
       const apiUrl = getApiUrl(API_CONFIG.ENDPOINTS.AUTH.LOGIN);
       console.log('Logging in user with BASE_URL:', getBaseUrl());
@@ -75,18 +105,29 @@ export const useAuth = () => {
         method: 'POST',
         headers: API_CONFIG.HEADERS,
         body: JSON.stringify(data),
-        signal: AbortSignal.timeout(API_CONFIG.TIMEOUT.DEFAULT),
+        signal,
       });
 
-      const result: AuthResponse = await response.json();
+      cleanup(); // Clean up timeout since request completed
 
       if (!response.ok) {
-        throw new Error('Login failed');
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || `Login failed with status ${response.status}`);
       }
 
+      const result = await response.json();
+      
+      // Ensure success property is set based on response status
+      const authResponse: AuthResponse = {
+        success: true,
+        token: result.token || '',
+        message: result.message
+      };
+
       setLoading(false);
-      return result;
+      return authResponse;
     } catch (err) {
+      cleanup(); // Clean up timeout on error
       let errorMessage = 'Network error occurred';
       
       if (err instanceof Error) {

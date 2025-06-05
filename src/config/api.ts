@@ -1,8 +1,5 @@
-import dotenv from 'dotenv';
-dotenv.config();
-
 export const API_CONFIG = {
-  BASE_URL: process.env.BASE_URL || 'http://localhost:3000/api',
+  BASE_URL: process.env.EXPO_PUBLIC_BASE_URL || 'http://localhost:3000/api',
 
   ENDPOINTS: {
     AUTH: {
@@ -29,9 +26,9 @@ export const API_CONFIG = {
 } as const;
 
 export const getBaseUrl = () => {
-  if (process.env.BASE_URL) {
-    console.log('Using BASE_URL from environment:', process.env.BASE_URL);
-    return process.env.BASE_URL;
+  if (process.env.EXPO_PUBLIC_BASE_URL) {
+    console.log('Using BASE_URL from environment:', process.env.EXPO_PUBLIC_BASE_URL);
+    return process.env.EXPO_PUBLIC_BASE_URL;
   }
 
   console.log('Using default BASE_URL:', API_CONFIG.BASE_URL);
