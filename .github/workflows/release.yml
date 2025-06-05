@@ -1,0 +1,76 @@
+name: Tag and Build Expo App
+
+on:
+  workflow_run:
+    workflows: ["CI"]
+    branches: ["main"]
+    types:
+      - completed
+
+permissions:
+  contents: write
+
+jobs:
+  tag-and-build:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install EAS CLI
+        run: npm install -g eas-cli
+
+      - name: Extract version from app.json
+        id: read_version
+        run: |
+          VERSION=$(jq -r .expo.version app.json)
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+
+      - name: Fetch all tags
+        run: git fetch --tags
+
+      - name: Get latest tag
+        id: get_latest_tag
+        run: |
+          LATEST_TAG=$(git tag --list "v*" --sort=-v:refname | head -n 1)
+          echo "LATEST_TAG=$LATEST_TAG" >> $GITHUB_ENV
+
+      - name: Compare versions and create tag if changed
+        id: create_tag
+        run: |
+          NEW_TAG="v${{ env.VERSION }}"
+          if [ "$NEW_TAG" = "$LATEST_TAG" ]; then
+            echo "Version not changed ($NEW_TAG), no tag created."
+            echo "TAG_CREATED=false" >> $GITHUB_ENV
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag "$NEW_TAG"
+          git push origin "$NEW_TAG"
+          echo "TAG_CREATED=true" >> $GITHUB_ENV
+          echo "TAG_NAME=$NEW_TAG" >> $GITHUB_ENV
+
+      - name: Create GitHub Release
+        if: env.TAG_CREATED == 'true'
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ env.TAG_NAME }}
+          name: Release ${{ env.TAG_NAME }}
+          draft: false
+          prerelease: false
+
+      - name: Run EAS Build for production
+        if: env.TAG_CREATED == 'true'
+        env:
+          EXPO_TOKEN: ${{ secrets.EAS_TOKEN }}
+        run: |
+          eas build --platform all --non-interactive --profile production
