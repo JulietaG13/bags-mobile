@@ -9,7 +9,8 @@ import {
   Platform,
   Text,
   BackHandler,
-  ScrollView
+  ScrollView,
+  Keyboard
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { theme } from '../constants';
@@ -36,6 +37,22 @@ export const RegisterScreen: React.FC<RegisterScreenProps> = ({
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [keyboardVisible, setKeyboardVisible] = useState(false);
+
+  // Handle keyboard visibility
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
+      setKeyboardVisible(true);
+    });
+    const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => {
+      setKeyboardVisible(false);
+    });
+
+    return () => {
+      keyboardDidShowListener.remove();
+      keyboardDidHideListener.remove();
+    };
+  }, []);
 
   // Handle back button
   useEffect(() => {
@@ -134,13 +151,18 @@ export const RegisterScreen: React.FC<RegisterScreenProps> = ({
         >
           <KeyboardAvoidingView 
             style={localStyles.keyboardView}
-            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+            keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 0}
           >
             <ScrollView 
               style={localStyles.scrollView}
-              contentContainerStyle={localStyles.scrollContentContainer}
+              contentContainerStyle={[
+                localStyles.scrollContentContainer,
+                keyboardVisible && localStyles.scrollContentContainerKeyboard
+              ]}
               showsVerticalScrollIndicator={false}
               keyboardShouldPersistTaps="handled"
+              bounces={false}
             >
               <View style={localStyles.container}>
                 {/* Header Section */}
@@ -233,6 +255,9 @@ const localStyles = StyleSheet.create({
   },
   scrollContentContainer: {
     flexGrow: 1,
+  },
+  scrollContentContainerKeyboard: {
+    paddingBottom: 150, // Extra space when keyboard is open
   },
   container: {
     flex: 1,
