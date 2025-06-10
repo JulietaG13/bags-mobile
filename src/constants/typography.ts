@@ -25,8 +25,8 @@ export const Typography = {
 
   // Line Heights - Optimized for mobile readability
   lineHeight: {
-    tight: 1.2,     // For headings - tighter for mobile
-    normal: 1.4,    // For body text - slightly tighter for mobile
+    tight: 1.2,     // For headings 
+    normal: 1.4,    // For body text
     relaxed: 1.6,   // For longer paragraphs
   },
 
@@ -63,68 +63,68 @@ export const Typography = {
     h1: {
       fontSize: 28,
       fontWeight: '700',
-      lineHeight: 1.2,
+      lineHeight: 32,
     },
     h2: {
       fontSize: 24,
       fontWeight: '600',
-      lineHeight: 1.25,
+      lineHeight: 28,
     },
     h3: {
       fontSize: 20,
       fontWeight: '600',
-      lineHeight: 1.25,
+      lineHeight: 24,
     },
     h4: {
       fontSize: 18,
       fontWeight: '600',
-      lineHeight: 1.3,
+      lineHeight: 22,
     },
 
     // Body text styles
     bodyLarge: {
       fontSize: 18,
       fontWeight: '400',
-      lineHeight: 1.4,
+      lineHeight: 24,
     },
     bodyMedium: {
       fontSize: 16,
       fontWeight: '400',
-      lineHeight: 1.4,
+      lineHeight: 22,
     },
     bodySmall: {
       fontSize: 14,
       fontWeight: '400',
-      lineHeight: 1.4,
+      lineHeight: 20,
     },
 
     // Label styles
     labelLarge: {
       fontSize: 16,
       fontWeight: '600',
-      lineHeight: 1.2,
+      lineHeight: 20,
     },
     labelMedium: {
       fontSize: 14,
       fontWeight: '500',
-      lineHeight: 1.2,
+      lineHeight: 18,
     },
     labelSmall: {
       fontSize: 12,
       fontWeight: '500',
-      lineHeight: 1.2,
+      lineHeight: 16,
     },
 
     // Caption styles
     caption: {
       fontSize: 12,
       fontWeight: '400',
-      lineHeight: 1.4,
+      lineHeight: 16,
     },
     overline: {
       fontSize: 12,
       fontWeight: '500',
-      lineHeight: 1.2,
+      lineHeight: 16,
       textTransform: 'uppercase' as const,
       letterSpacing: 0.5,
     },
@@ -133,12 +133,12 @@ export const Typography = {
     balance: {
       fontSize: 32,
       fontWeight: '700',
-      lineHeight: 1.2,
+      lineHeight: 40,
     },
     amount: {
       fontSize: 18,
       fontWeight: '600',
-      lineHeight: 1.2,
+      lineHeight: 24,
     },
     currency: {
       fontSize: 16,

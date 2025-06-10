@@ -18,7 +18,7 @@ import { useAuth } from '../hooks';
 import { FormContainer, FormHeader, InputField, PasswordField, FormButton } from '../components/forms';
 
 interface LoginScreenProps {
-  onLoginSuccess?: () => void;
+  onLoginSuccess?: (token?: string) => void;
   onBackToWelcome?: () => void;
   onGoToRegister?: () => void;
 }
@@ -100,11 +100,10 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
       });
 
       if (response.success) {
-        Alert.alert(
-          'Login Successful!',
-          `Welcome back to Bags!`,
-          [{ text: 'OK', onPress: onLoginSuccess }]
-        );
+        // Navigate immediately without alert for better UX
+        if (onLoginSuccess) {
+          onLoginSuccess(response.token);
+        }
       }
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Login failed';
@@ -210,7 +209,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
 
                   <FormButton
                     title="Don't have an account? Sign Up"
-                    onPress={onGoToRegister}
+                    onPress={onGoToRegister || (() => {})}
                     variant="text"
                   />
                 </FormContainer>

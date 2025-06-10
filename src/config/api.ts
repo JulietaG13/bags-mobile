@@ -7,10 +7,9 @@ export const API_CONFIG = {
       LOGIN: '/auth/login',
     },
     WALLET: {
-      BALANCE: '/wallet/balance',
-      TRANSACTIONS: '/wallet/transactions',
-      SEND_MONEY: '/wallet/send',
-      DEBIN: '/wallet/debin',
+      INFO: '/wallet',
+      TRANSFER: '/transfer',
+      SEND_TRANSFER: '/transfer',
     },
   },
 

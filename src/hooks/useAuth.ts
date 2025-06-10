@@ -6,6 +6,7 @@ import {
   AuthResponse,
   prepareCreateWalletRequest 
 } from '../types';
+import { fetchWithLogging } from '../utils/apiLogger';
 
 const createTimeoutController = (timeoutMs: number) => {
   const controller = new AbortController();
@@ -40,7 +41,7 @@ export const useAuth = () => {
       const apiUrl = getApiUrl(API_CONFIG.ENDPOINTS.AUTH.REGISTER);
       console.log('Registering user with BASE_URL:', getBaseUrl());
       
-      const response = await fetch(apiUrl, {
+      const response = await fetchWithLogging(apiUrl, {
         method: 'POST',
         headers: API_CONFIG.HEADERS,
         body: JSON.stringify(requestData),
@@ -101,7 +102,7 @@ export const useAuth = () => {
       const apiUrl = getApiUrl(API_CONFIG.ENDPOINTS.AUTH.LOGIN);
       console.log('Logging in user with BASE_URL:', getBaseUrl());
       
-      const response = await fetch(apiUrl, {
+      const response = await fetchWithLogging(apiUrl, {
         method: 'POST',
         headers: API_CONFIG.HEADERS,
         body: JSON.stringify(data),

@@ -1,13 +1,19 @@
-
-export type { 
-  CreateWalletRequest, 
-  AuthRequest, 
-  AuthResponse 
+export type {
+  CreateWalletRequest,
+  AuthRequest,
+  AuthResponse,
 } from './dtos';
 
-export { 
-  ValidationRules, 
+export {
+  ValidationRules,
   prepareCreateWalletRequest,
   isValidEmail,
-  isValidPassword 
-} from './dtos'; 
+  isValidPassword,
+} from './dtos';
+
+export type {
+  WalletInfo,
+  TransferRequest,
+  TransferHistoryPage,
+  TransferRecord,
+} from './wallet'; 

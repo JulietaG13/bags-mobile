@@ -1,13 +1,21 @@
 import React, { useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
+import { View, StyleSheet } from 'react-native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import WelcomeScreen from './src/screens/WelcomeScreen';
 import RegisterScreen from './src/screens/RegisterScreen';
 import LoginScreen from './src/screens/LoginScreen';
+import HomeScreen from './src/screens/HomeScreen';
+import MakeTransferScreen from './src/screens/MakeTransferScreen';
+import DebInScreen from './src/screens/DebInScreen';
+import BottomNavigation, { TabType } from './src/components/BottomNavigation';
 
-type ScreenType = 'welcome' | 'register' | 'login' | 'dashboard';
+type ScreenType = 'welcome' | 'register' | 'login' | 'main';
 
-export default function App() {
+function AppContent() {
   const [currentScreen, setCurrentScreen] = useState<ScreenType>('welcome');
+  const [userToken, setUserToken] = useState<string | undefined>(undefined);
+  const [activeTab, setActiveTab] = useState<TabType>('home');
 
   // Welcome Screen Handlers
   const handleGetStarted = () => {
@@ -38,10 +46,12 @@ export default function App() {
   };
 
   // Login Screen Handlers
-  const handleLoginSuccess = () => {
+  const handleLoginSuccess = (token?: string) => {
     console.log('Login successful');
-    // Navigate to dashboard (for now, go back to welcome)
-    setCurrentScreen('welcome');
+    if (token) {
+      setUserToken(token);
+      setCurrentScreen('main');
+    }
   };
 
   const handleBackToWelcomeFromLogin = () => {
@@ -54,7 +64,24 @@ export default function App() {
     setCurrentScreen('register');
   };
 
-  // Screen Rendering
+  // Home Screen Handlers
+  const handleLogout = () => {
+    console.log('Logging out');
+    setUserToken(undefined);
+    setCurrentScreen('welcome');
+  };
+
+  const handleUnauthorized = () => {
+    console.log('Unauthorized access - redirecting to login');
+    setUserToken(undefined);
+    setCurrentScreen('login');
+  };
+
+  const handleNavigateToTransfers = () => {
+    console.log('Navigate to all transfers');
+    // TODO: Implement all transfers screen
+  };
+
   switch (currentScreen) {
     case 'register':
       return (
@@ -80,6 +107,51 @@ export default function App() {
         </>
       );
 
+    case 'main':
+      const renderMainScreen = () => {
+        switch (activeTab) {
+          case 'transfer':
+            return (
+              <MakeTransferScreen
+                token={userToken}
+                onTransferSuccess={() => setActiveTab('home')}
+                onUnauthorized={handleUnauthorized}
+              />
+            );
+          case 'debin':
+            return (
+              <DebInScreen
+                token={userToken}
+                onRequestSuccess={() => setActiveTab('home')}
+              />
+            );
+          case 'home':
+          default:
+            return (
+              <HomeScreen
+                token={userToken}
+                onNavigateToTransfers={handleNavigateToTransfers}
+                onUnauthorized={handleUnauthorized}
+              />
+            );
+        }
+      };
+
+      return (
+        <>
+          <StatusBar style="auto" />
+          <View style={localStyles.mainContainer}>
+            <View style={localStyles.contentContainer}>
+              {renderMainScreen()}
+            </View>
+            <BottomNavigation
+              activeTab={activeTab}
+              onTabChange={setActiveTab}
+            />
+          </View>
+        </>
+      );
+
     case 'welcome':
     default:
       return (
@@ -92,4 +164,22 @@ export default function App() {
         </>
       );
   }
+}
+
+const localStyles = StyleSheet.create({
+  mainContainer: {
+    flex: 1,
+  },
+  contentContainer: {
+    flex: 1,
+    paddingBottom: 90, // Space for bottom navigation
+  },
+});
+
+export default function App() {
+  return (
+    <SafeAreaProvider>
+      <AppContent />
+    </SafeAreaProvider>
+  );
 } 
