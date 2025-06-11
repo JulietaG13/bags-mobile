@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { API_CONFIG, getBaseUrl } from '../config/api';
 import { 
   CreateWalletRequest, 
@@ -6,6 +6,7 @@ import {
   AuthResponse,
   prepareCreateWalletRequest 
 } from '../types';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const createTimeoutController = (timeoutMs: number) => {
   const controller = new AbortController();
@@ -17,7 +18,43 @@ const createTimeoutController = (timeoutMs: number) => {
   return { signal: originalSignal, cleanup };
 };
 
-export const useAuth = () => {
+interface UseAuthResult {
+  userEmail: string | null;
+  isAuthenticated: boolean;
+  isLoading: boolean;
+  register: (data: CreateWalletRequest) => Promise<AuthResponse>;
+  login: (data: AuthRequest) => Promise<AuthResponse>;
+  loading: boolean;
+  error: string | null;
+  clearError: () => void;
+  getCurrentBaseUrl: () => string;
+}
+
+export const useAuth = (): UseAuthResult => {
+  const [userEmail, setUserEmail] = useState<string | null>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const token = await AsyncStorage.getItem('token');
+        const email = await AsyncStorage.getItem('userEmail');
+        
+        setIsAuthenticated(!!token);
+        setUserEmail(email);
+      } catch (error) {
+        console.error('Error checking auth:', error);
+        setIsAuthenticated(false);
+        setUserEmail(null);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    checkAuth();
+  }, []);
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -156,6 +193,9 @@ export const useAuth = () => {
   };
 
   return {
+    userEmail,
+    isAuthenticated,
+    isLoading,
     register,
     login,
     loading,

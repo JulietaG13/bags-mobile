@@ -10,7 +10,7 @@ export default class Page {
     public async waitForAppReady() {
         // Wait for the app to be fully loaded - longer wait for stability
         console.log('Waiting for app to be ready...');
-        await browser.pause(5000);
+        await browser.pause(8000);
         
         // Check if app is still running
         try {

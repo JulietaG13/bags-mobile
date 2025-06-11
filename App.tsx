@@ -3,6 +3,7 @@ import { StatusBar } from 'expo-status-bar';
 import WelcomeScreen from './src/screens/WelcomeScreen';
 import RegisterScreen from './src/screens/RegisterScreen';
 import LoginScreen from './src/screens/LoginScreen';
+import DashboardScreen from './src/screens/DashboardScreen';
 
 type ScreenType = 'welcome' | 'register' | 'login' | 'dashboard';
 
@@ -23,8 +24,7 @@ export default function App() {
   // Register Screen Handlers
   const handleRegisterSuccess = () => {
     console.log('Registration successful');
-    // Navigate to dashboard (for now, go back to welcome)
-    setCurrentScreen('welcome');
+    setCurrentScreen('dashboard');
   };
 
   const handleBackToWelcomeFromRegister = () => {
@@ -40,8 +40,7 @@ export default function App() {
   // Login Screen Handlers
   const handleLoginSuccess = () => {
     console.log('Login successful');
-    // Navigate to dashboard (for now, go back to welcome)
-    setCurrentScreen('welcome');
+    setCurrentScreen('dashboard');
   };
 
   const handleBackToWelcomeFromLogin = () => {
@@ -56,6 +55,14 @@ export default function App() {
 
   // Screen Rendering
   switch (currentScreen) {
+    case 'dashboard':
+      return (
+        <>
+          <StatusBar style="auto" />
+          <DashboardScreen />
+        </>
+      );
+
     case 'register':
       return (
         <>
