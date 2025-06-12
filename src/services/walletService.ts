@@ -1,6 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { get, post } from '../config/api';
 import { WalletInfo, TransferRequest, TransferHistoryPage } from '../types/wallet';
+import { DebInRequest } from '../types';
 
 export async function getWalletInfo(): Promise<WalletInfo> {
     const token = await AsyncStorage.getItem('token');
@@ -33,4 +34,13 @@ export async function getTransferHistory(page = 0, size = 5): Promise<TransferHi
     });
 
     return response.data;
+}
+
+export async function requestDebIn(data: DebInRequest): Promise<void> {
+    const token = await AsyncStorage.getItem('token');
+    const headers = {
+        Authorization: `Bearer ${token}`,
+    };
+
+    await post('/debin', data, { headers });
 } 

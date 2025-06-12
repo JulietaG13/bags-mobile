@@ -98,7 +98,12 @@ class SendScreen {
      */
     async getEmailValue() {
         await this.emailInput.waitForDisplayed({ timeout: 5000 });
-        return await this.emailInput.getValue();
+        const text = await this.emailInput.getText();
+        // On Android, empty inputs return placeholder text, so we need to check for known placeholders
+        if (text === "Enter recipient's email address" || text === '' || !text) {
+            return '';
+        }
+        return text;
     }
 
     /**
@@ -106,7 +111,12 @@ class SendScreen {
      */
     async getAmountValue() {
         await this.amountInput.waitForDisplayed({ timeout: 5000 });
-        return await this.amountInput.getValue();
+        const text = await this.amountInput.getText();
+        // On Android, empty inputs return placeholder text, so we need to check for known placeholders
+        if (text === '0.00' || text === '' || !text) {
+            return '';
+        }
+        return text;
     }
 
     /**

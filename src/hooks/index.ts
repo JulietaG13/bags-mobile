@@ -1,4 +1,7 @@
 export { useAuth } from './useAuth';
+export { useWallet } from './useWallet';
+export { useTransferHistory } from './useTransferHistory';
+export { useDebIn } from './useDebIn';
 
 export type { 
   CreateWalletRequest, 
