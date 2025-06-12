@@ -138,6 +138,8 @@ const HomeScreen: React.FC<HomeScreenProps> = ({
                 name="logout" 
                 size={24} 
                 color={theme.colors.text.primary}
+                testID="home-sign-out-icon"
+                accessibilityLabel="home-sign-out-icon"
               />
             </TouchableOpacity>
           </View>
@@ -150,7 +152,13 @@ const HomeScreen: React.FC<HomeScreenProps> = ({
           accessibilityLabel="home-balance-card"
         >
           <View style={localStyles.balanceHeader}>
-            <Text style={[styles.text.secondary, localStyles.balanceLabel]}>Current Balance</Text>
+            <Text 
+              style={[styles.text.secondary, localStyles.balanceLabel]}
+              testID="home-balance-label"
+              accessibilityLabel="home-balance-label"
+            >
+              Current Balance
+            </Text>
             <TouchableOpacity 
               onPress={toggleBalanceVisibility}
               activeOpacity={0.7}
@@ -162,6 +170,8 @@ const HomeScreen: React.FC<HomeScreenProps> = ({
                 name={isBalanceVisible ? "visibility" : "visibility-off"} 
                 size={20} 
                 color={theme.colors.text.tertiary}
+                testID="home-balance-visibility-icon"
+                accessibilityLabel="home-balance-visibility-icon"
               />
             </TouchableOpacity>
           </View>
@@ -183,7 +193,13 @@ const HomeScreen: React.FC<HomeScreenProps> = ({
           testID="home-quick-actions-section"
           accessibilityLabel="home-quick-actions-section"
         >
-          <Text style={[styles.text.heading, localStyles.sectionTitle]}>Quick Actions</Text>
+          <Text 
+            style={[styles.text.heading, localStyles.sectionTitle]}
+            testID="home-quick-actions-title"
+            accessibilityLabel="home-quick-actions-title"
+          >
+            Quick Actions
+          </Text>
           <View style={localStyles.actionButtons}>
             <TouchableOpacity 
               style={localStyles.actionButton}
@@ -197,9 +213,17 @@ const HomeScreen: React.FC<HomeScreenProps> = ({
                   name="send" 
                   size={24} 
                   color={theme.colors.text.primary}
+                  testID="home-send-money-icon"
+                  accessibilityLabel="home-send-money-icon"
                 />
               </View>
-              <Text style={[styles.text.secondary, localStyles.actionText]}>Send Money</Text>
+              <Text 
+                style={[styles.text.secondary, localStyles.actionText]}
+                testID="home-send-money-text"
+                accessibilityLabel="home-send-money-text"
+              >
+                Send Money
+              </Text>
             </TouchableOpacity>
             <TouchableOpacity 
               style={localStyles.actionButton}
@@ -213,9 +237,17 @@ const HomeScreen: React.FC<HomeScreenProps> = ({
                   name="account-balance-wallet" 
                   size={24} 
                   color={theme.colors.text.primary}
+                  testID="home-request-money-icon"
+                  accessibilityLabel="home-request-money-icon"
                 />
               </View>
-              <Text style={[styles.text.secondary, localStyles.actionText]}>Request</Text>
+              <Text 
+                style={[styles.text.secondary, localStyles.actionText]}
+                testID="home-request-money-text"
+                accessibilityLabel="home-request-money-text"
+              >
+                Request
+              </Text>
             </TouchableOpacity>
             <TouchableOpacity 
               style={localStyles.actionButton}
@@ -229,9 +261,17 @@ const HomeScreen: React.FC<HomeScreenProps> = ({
                   name="history" 
                   size={24} 
                   color={theme.colors.text.primary}
+                  testID="home-view-history-icon"
+                  accessibilityLabel="home-view-history-icon"
                 />
               </View>
-              <Text style={[styles.text.secondary, localStyles.actionText]}>History</Text>
+              <Text 
+                style={[styles.text.secondary, localStyles.actionText]}
+                testID="home-view-history-text"
+                accessibilityLabel="home-view-history-text"
+              >
+                History
+              </Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -243,7 +283,13 @@ const HomeScreen: React.FC<HomeScreenProps> = ({
           accessibilityLabel="home-transfers-section"
         >
           <View style={localStyles.transfersHeader}>
-            <Text style={[styles.text.heading, localStyles.sectionTitle]}>Recent Transfers</Text>
+            <Text 
+              style={[styles.text.heading, localStyles.sectionTitle]}
+              testID="home-transfers-title"
+              accessibilityLabel="home-transfers-title"
+            >
+              Recent Transfers
+            </Text>
             <Text 
               style={[styles.text.primary, localStyles.seeAll]}
               testID="home-see-all-transfers"
@@ -262,6 +308,8 @@ const HomeScreen: React.FC<HomeScreenProps> = ({
               <ActivityIndicator 
                 size="small" 
                 color={theme.colors.text.primary}
+                testID="home-loading-indicator"
+                accessibilityLabel="home-loading-indicator"
               />
             </View>
           ) : (

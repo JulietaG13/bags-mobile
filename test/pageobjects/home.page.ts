@@ -25,6 +25,12 @@ class HomeScreen {
     get loadingContainer() { return $('~home-loading-container'); }
     get transfersList() { return $('~home-transfers-list'); }
 
+    // Bottom Navigation
+    get bottomNavigationContainer() { return $('~bottom-navigation-container'); }
+    get homeTab() { return $('~bottom-nav-home-tab'); }
+    get sendTab() { return $('~bottom-nav-send-tab'); }
+    get debinTab() { return $('~bottom-nav-debin-tab'); }
+
     /**
      * Wait for home screen to be loaded
      */
@@ -249,6 +255,35 @@ class HomeScreen {
 
         console.log('[HOME PAGE] All quick action buttons are displayed');
         return true;
+    }
+
+    /**
+     * Tap home tab in bottom navigation
+     */
+    async tapHomeTab() {
+        await this.homeTab.waitForDisplayed({ timeout: 5000 });
+        await this.homeTab.tap();
+        console.log('[HOME PAGE] Home tab tapped');
+    }
+
+    /**
+     * Tap send tab in bottom navigation
+     */
+    async tapSendTab() {
+        await this.sendTab.waitForDisplayed({ timeout: 5000 });
+        await this.sendTab.tap();
+        console.log('[HOME PAGE] Send tab tapped');
+    }
+
+    /**
+     * Check if bottom navigation is displayed
+     */
+    async isBottomNavigationDisplayed() {
+        try {
+            return await this.bottomNavigationContainer.isDisplayed();
+        } catch (error) {
+            return false;
+        }
     }
 }
 

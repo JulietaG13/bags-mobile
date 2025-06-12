@@ -18,22 +18,33 @@ const BottomNavigation: React.FC<BottomNavigationProps> = ({ activeTab, onTabPre
   ];
 
   return (
-    <View style={styles.container}>
+    <View 
+      style={styles.container}
+      testID="bottom-navigation-container"
+      accessibilityLabel="bottom-navigation-container"
+    >
       {tabs.map(tab => (
         <TouchableOpacity
           key={tab.id}
           style={styles.tab}
           onPress={() => onTabPress(tab.id)}
+          testID={`bottom-nav-${tab.id}-tab`}
+          accessibilityLabel={`bottom-nav-${tab.id}-tab`}
         >
           <MaterialIcons
             name={tab.icon}
             size={24}
             color={activeTab === tab.id ? theme.colors.text.primary : theme.colors.text.tertiary}
+            testID={`bottom-nav-${tab.id}-icon`}
+            accessibilityLabel={`bottom-nav-${tab.id}-icon`}
           />
           <Text style={[
             styles.tabLabel,
             { color: activeTab === tab.id ? theme.colors.text.primary : theme.colors.text.tertiary }
-          ]}>
+          ]}
+          testID={`bottom-nav-${tab.id}-label`}
+          accessibilityLabel={`bottom-nav-${tab.id}-label`}
+          >
             {tab.label}
           </Text>
         </TouchableOpacity>
