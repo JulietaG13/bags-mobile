@@ -95,7 +95,11 @@ const HomeScreen: React.FC<HomeScreenProps> = ({
   };
 
   return (
-    <View style={[styles.container, localStyles.container]}>
+    <View 
+      style={[styles.container, localStyles.container]}
+      testID="home-screen-container"
+      accessibilityLabel="home-screen-container"
+    >
       <ScrollView
         style={localStyles.scrollView}
         refreshControl={
@@ -106,15 +110,29 @@ const HomeScreen: React.FC<HomeScreenProps> = ({
           />
         }
         showsVerticalScrollIndicator={false}
+        testID="home-screen-scroll-view"
+        accessibilityLabel="home-screen-scroll-view"
       >
         {/* Header */}
-        <View style={[screenStyles.dashboard.header, localStyles.header]}>
+        <View 
+          style={[screenStyles.dashboard.header, localStyles.header]}
+          testID="home-screen-header"
+          accessibilityLabel="home-screen-header"
+        >
           <View style={localStyles.headerContent}>
-            <Text style={[styles.text.heading, localStyles.greeting]}>Welcome back!</Text>
+            <Text 
+              style={[styles.text.heading, localStyles.greeting]}
+              testID="home-screen-greeting"
+              accessibilityLabel="home-screen-greeting"
+            >
+              Welcome back!
+            </Text>
             <TouchableOpacity 
               onPress={handleSignOut}
               activeOpacity={0.7}
               style={localStyles.signOutButton}
+              testID="home-sign-out-button"
+              accessibilityLabel="home-sign-out-button"
             >
               <MaterialIcons 
                 name="logout" 
@@ -126,13 +144,19 @@ const HomeScreen: React.FC<HomeScreenProps> = ({
         </View>
 
         {/* Balance Card */}
-        <View style={[screenStyles.dashboard.balanceCard, localStyles.balanceCard]}>
+        <View 
+          style={[screenStyles.dashboard.balanceCard, localStyles.balanceCard]}
+          testID="home-balance-card"
+          accessibilityLabel="home-balance-card"
+        >
           <View style={localStyles.balanceHeader}>
             <Text style={[styles.text.secondary, localStyles.balanceLabel]}>Current Balance</Text>
             <TouchableOpacity 
               onPress={toggleBalanceVisibility}
               activeOpacity={0.7}
               style={localStyles.eyeButton}
+              testID="home-balance-visibility-toggle"
+              accessibilityLabel="home-balance-visibility-toggle"
             >
               <MaterialIcons 
                 name={isBalanceVisible ? "visibility" : "visibility-off"} 
@@ -141,7 +165,11 @@ const HomeScreen: React.FC<HomeScreenProps> = ({
               />
             </TouchableOpacity>
           </View>
-          <Text style={[styles.financial.balance, localStyles.balanceAmount]}>
+          <Text 
+            style={[styles.financial.balance, localStyles.balanceAmount]}
+            testID="home-balance-amount"
+            accessibilityLabel="home-balance-amount"
+          >
             {isBalanceVisible 
               ? `${walletInfo?.currency || 'USD'} $${walletInfo?.balance.amount.toFixed(2) || '0.00'}`
               : `${walletInfo?.currency || 'USD'} $••••••`
@@ -150,13 +178,19 @@ const HomeScreen: React.FC<HomeScreenProps> = ({
         </View>
 
         {/* Quick Actions */}
-        <View style={localStyles.quickActions}>
+        <View 
+          style={localStyles.quickActions}
+          testID="home-quick-actions-section"
+          accessibilityLabel="home-quick-actions-section"
+        >
           <Text style={[styles.text.heading, localStyles.sectionTitle]}>Quick Actions</Text>
           <View style={localStyles.actionButtons}>
             <TouchableOpacity 
               style={localStyles.actionButton}
               onPress={onSendMoney}
               activeOpacity={0.7}
+              testID="home-send-money-button"
+              accessibilityLabel="home-send-money-button"
             >
               <View style={[styles.cardElevated, localStyles.actionIcon]}>
                 <MaterialIcons 
@@ -171,6 +205,8 @@ const HomeScreen: React.FC<HomeScreenProps> = ({
               style={localStyles.actionButton}
               onPress={onRequestMoney}
               activeOpacity={0.7}
+              testID="home-request-money-button"
+              accessibilityLabel="home-request-money-button"
             >
               <View style={[styles.cardElevated, localStyles.actionIcon]}>
                 <MaterialIcons 
@@ -185,6 +221,8 @@ const HomeScreen: React.FC<HomeScreenProps> = ({
               style={localStyles.actionButton}
               onPress={onViewHistory}
               activeOpacity={0.7}
+              testID="home-view-history-button"
+              accessibilityLabel="home-view-history-button"
             >
               <View style={[styles.cardElevated, localStyles.actionIcon]}>
                 <MaterialIcons 
@@ -199,21 +237,39 @@ const HomeScreen: React.FC<HomeScreenProps> = ({
         </View>
 
         {/* Recent Transfers */}
-        <View style={localStyles.transfersSection}>
+        <View 
+          style={localStyles.transfersSection}
+          testID="home-transfers-section"
+          accessibilityLabel="home-transfers-section"
+        >
           <View style={localStyles.transfersHeader}>
             <Text style={[styles.text.heading, localStyles.sectionTitle]}>Recent Transfers</Text>
-            <Text style={[styles.text.primary, localStyles.seeAll]}>See All</Text>
+            <Text 
+              style={[styles.text.primary, localStyles.seeAll]}
+              testID="home-see-all-transfers"
+              accessibilityLabel="home-see-all-transfers"
+            >
+              See All
+            </Text>
           </View>
           
           {walletLoading || transfersLoading ? (
-            <View style={localStyles.loadingContainer}>
+            <View 
+              style={localStyles.loadingContainer}
+              testID="home-loading-container"
+              accessibilityLabel="home-loading-container"
+            >
               <ActivityIndicator 
                 size="small" 
                 color={theme.colors.text.primary}
               />
             </View>
           ) : (
-            <View style={localStyles.transfersList}>
+            <View 
+              style={localStyles.transfersList}
+              testID="home-transfers-list"
+              accessibilityLabel="home-transfers-list"
+            >
               {transferHistory?.content.map((transfer) => (
                 <TransferItem
                   key={transfer.id}

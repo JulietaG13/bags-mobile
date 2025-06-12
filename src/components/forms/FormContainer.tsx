@@ -5,14 +5,22 @@ import { theme } from '../../constants';
 interface FormContainerProps {
   children: React.ReactNode;
   style?: any;
+  testID?: string;
+  accessibilityLabel?: string;
 }
 
 export const FormContainer: React.FC<FormContainerProps> = ({
   children,
   style,
+  testID,
+  accessibilityLabel,
 }) => {
   return (
-    <View style={[localStyles.container, style]}>
+    <View 
+      style={[localStyles.container, style]}
+      testID={testID}
+      accessibilityLabel={accessibilityLabel}
+    >
       {children}
     </View>
   );

@@ -7,6 +7,8 @@ interface FormHeaderProps {
   subtitle?: string;
   showBackButton?: boolean;
   onBackPress?: () => void;
+  testID?: string;
+  accessibilityLabel?: string;
 }
 
 export const FormHeader: React.FC<FormHeaderProps> = ({
@@ -14,9 +16,15 @@ export const FormHeader: React.FC<FormHeaderProps> = ({
   subtitle,
   showBackButton = false,
   onBackPress,
+  testID,
+  accessibilityLabel,
 }) => {
   return (
-    <View style={localStyles.container}>
+    <View 
+      style={localStyles.container}
+      testID={testID}
+      accessibilityLabel={accessibilityLabel}
+    >
       {showBackButton && (
         <TouchableOpacity 
           style={localStyles.backButton}

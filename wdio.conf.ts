@@ -64,7 +64,15 @@ export const config: WebdriverIO.Config = {
         'appium:autoGrantPermissions': true,
         'appium:noReset': false,
         'appium:fullReset': true,
-
+        // Additional settings for debug APK testing
+        'appium:disableWindowAnimation': true,
+        'appium:skipServerInstallation': true,
+        'appium:skipDeviceInitialization': false,
+        'appium:skipLogcatCapture': false,
+        // Force app to wait for debugger (helps with bundle loading)
+        'appium:appWaitForLaunch': false,
+        'appium:androidInstallTimeout': 90000,
+        'appium:adbExecTimeout': 20000,
     }],
 
     //

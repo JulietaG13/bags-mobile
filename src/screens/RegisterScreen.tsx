@@ -164,7 +164,11 @@ export const RegisterScreen: React.FC<RegisterScreenProps> = ({
               keyboardShouldPersistTaps="handled"
               bounces={false}
             >
-              <View style={localStyles.container}>
+              <View 
+                style={localStyles.container}
+                testID="register-screen-container"
+                accessibilityLabel="register-screen-container"
+              >
                 {/* Header Section */}
                 <View style={localStyles.headerSection}>
                   <FormHeader
@@ -172,6 +176,8 @@ export const RegisterScreen: React.FC<RegisterScreenProps> = ({
                     subtitle="Join thousands of users managing their finances with Bags"
                     showBackButton={true}
                     onBackPress={onBackToWelcome}
+                    testID="register-header"
+                    accessibilityLabel="register-header"
                   />
                 </View>
 
@@ -179,7 +185,11 @@ export const RegisterScreen: React.FC<RegisterScreenProps> = ({
                 <View style={localStyles.spacer} />
 
                 {/* Form Section - Fixed at bottom */}
-                <FormContainer style={localStyles.bottomFormContainer}>
+                <FormContainer 
+                  style={localStyles.bottomFormContainer}
+                  testID="register-form-container"
+                  accessibilityLabel="register-form-container"
+                >
                   <InputField
                     label="Email Address"
                     value={formData.email}
@@ -189,6 +199,8 @@ export const RegisterScreen: React.FC<RegisterScreenProps> = ({
                     keyboardType="email-address"
                     autoCapitalize="none"
                     autoComplete="email"
+                    testID="register-email-input"
+                    accessibilityLabel="register-email-input"
                   />
 
                   <PasswordField
@@ -198,6 +210,8 @@ export const RegisterScreen: React.FC<RegisterScreenProps> = ({
                     error={errors.password}
                     placeholder="Create a strong password"
                     showStrengthIndicator={true}
+                    testID="register-password-input"
+                    accessibilityLabel="register-password-input"
                   />
 
                   <PasswordField
@@ -207,12 +221,24 @@ export const RegisterScreen: React.FC<RegisterScreenProps> = ({
                     error={errors.confirmPassword}
                     placeholder="Confirm your password"
                     showStrengthIndicator={false}
+                    testID="register-confirm-password-input"
+                    accessibilityLabel="register-confirm-password-input"
                   />
 
                   {/* Show API error if exists */}
                   {error && (
-                    <View style={localStyles.errorContainer}>
-                      <Text style={localStyles.apiErrorText}>{error}</Text>
+                    <View 
+                      style={localStyles.errorContainer}
+                      testID="register-error-container"
+                      accessibilityLabel="register-error-container"
+                    >
+                      <Text 
+                        style={localStyles.apiErrorText}
+                        testID="register-error-text"
+                        accessibilityLabel="register-error-text"
+                      >
+                        {error}
+                      </Text>
                     </View>
                   )}
 
@@ -222,12 +248,16 @@ export const RegisterScreen: React.FC<RegisterScreenProps> = ({
                     loading={loading}
                     variant="primary"
                     style={localStyles.createButton}
+                    testID="register-submit-button"
+                    accessibilityLabel="register-submit-button"
                   />
 
                   <FormButton
                     title="Already have an account? Sign In"
-                    onPress={onGoToLogin}
+                    onPress={onGoToLogin || (() => {})}
                     variant="text"
+                    testID="register-goto-login-button"
+                    accessibilityLabel="register-goto-login-button"
                   />
                 </FormContainer>
               </View>

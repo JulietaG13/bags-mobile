@@ -7,17 +7,24 @@
     "android": "expo run:android",
     "ios": "expo run:ios",
     "web": "expo start --web",
-    "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "build:android:release": "npx expo run:android --variant release",
+    "build:android:debug": "npx expo run:android --variant debug",
+    "test:setup": "npm run build:android:release",
+    "test": "npx wdio run wdio.conf.ts",
+    "test:with-metro": "concurrently \"npx expo start --no-dev --minify\" \"sleep 10 && npm run test\"",
+    "prebuild:clean": "npx expo prebuild --platform android --clean"
   },
   "dependencies": {
     "@expo/vector-icons": "^14.1.0",
+    "@react-native-async-storage/async-storage": "2.1.2",
     "expo": "~53.0.9",
+    "expo-build-properties": "^0.14.6",
     "expo-linear-gradient": "^14.1.4",
     "expo-status-bar": "~2.2.3",
     "react": "19.0.0",
     "react-native": "0.79.2",
-    "react-native-vector-icons": "^10.2.0",
-    "@react-native-async-storage/async-storage": "2.1.2"
+    "react-native-vector-icons": "^10.2.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

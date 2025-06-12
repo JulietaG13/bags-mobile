@@ -10,6 +10,8 @@ interface PasswordFieldProps {
   placeholder?: string;
   required?: boolean;
   showStrengthIndicator?: boolean;
+  testID?: string;
+  accessibilityLabel?: string;
 }
 
 export const PasswordField: React.FC<PasswordFieldProps> = ({
@@ -20,6 +22,8 @@ export const PasswordField: React.FC<PasswordFieldProps> = ({
   placeholder = "Enter password",
   required = false,
   showStrengthIndicator = false,
+  testID,
+  accessibilityLabel,
 }) => {
   const [isSecure, setIsSecure] = useState(true);
   const hasError = !!error;
@@ -73,6 +77,8 @@ export const PasswordField: React.FC<PasswordFieldProps> = ({
           secureTextEntry={isSecure}
           autoCapitalize="none"
           autoCorrect={false}
+          testID={testID}
+          accessibilityLabel={accessibilityLabel}
         />
         
         <TouchableOpacity

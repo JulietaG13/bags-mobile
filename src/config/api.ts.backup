@@ -3,13 +3,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 // Get base URL from environment variables
 const BASE_URL = process.env.EXPO_PUBLIC_BASE_URL || 'http://localhost:8080';
 
-// Log the base URL being used
-console.log('[API CONFIG] Base URL configured:', {
-  baseUrl: BASE_URL,
-  source: process.env.EXPO_PUBLIC_BASE_URL ? 'environment' : 'default',
-  timestamp: new Date().toISOString()
-});
-
 // Global 401 handler - set by the AuthProvider
 let globalUnauthorizedHandler: (() => Promise<void>) | null = null;
 
@@ -48,24 +41,6 @@ const formatJsonForLog = (data: any, maxDepth = 3): string => {
   } catch (error) {
     return '[Unable to stringify data]';
   }
-};
-
-// Enhanced error handling for network issues
-const handleNetworkError = (error: any, url: string): Error => {
-  console.error('[API ERROR] Network error details:', {
-    error: error.message,
-    baseUrl: BASE_URL,
-    fullUrl: url,
-    timestamp: new Date().toISOString()
-  });
-
-  if (error.message.includes('Network request failed') || 
-      error.message.includes('fetch') ||
-      error.message.includes('TypeError')) {
-    return new Error('Unable to connect to server. Please check your internet connection.');
-  }
-  
-  return error;
 };
 
 // Helper function to parse error responses and extract detail and code
@@ -198,9 +173,8 @@ export const get = async <T>(
       status: response.status,
     };
   } catch (error) {
-    const networkError = handleNetworkError(error, url);
-    console.error(`[API ERROR] GET ${url} - Request failed:`, networkError);
-    throw networkError;
+    console.error(`[API ERROR] GET ${url} - Request failed:`, error);
+    throw error;
   }
 };
 
@@ -273,9 +247,8 @@ export const post = async <T>(
       status: response.status,
     };
   } catch (error) {
-    const networkError = handleNetworkError(error, url);
-    console.error(`[API ERROR] POST ${url} - Request failed:`, networkError);
-    throw networkError;
+    console.error(`[API ERROR] POST ${url} - Request failed:`, error);
+    throw error;
   }
 };
 
@@ -348,9 +321,8 @@ export const put = async <T>(
       status: response.status,
     };
   } catch (error) {
-    const networkError = handleNetworkError(error, url);
-    console.error(`[API ERROR] PUT ${url} - Request failed:`, networkError);
-    throw networkError;
+    console.error(`[API ERROR] PUT ${url} - Request failed:`, error);
+    throw error;
   }
 };
 
@@ -414,9 +386,8 @@ export const del = async <T>(
       status: response.status,
     };
   } catch (error) {
-    const networkError = handleNetworkError(error, url);
-    console.error(`[API ERROR] DELETE ${url} - Request failed:`, networkError);
-    throw networkError;
+    console.error(`[API ERROR] DELETE ${url} - Request failed:`, error);
+    throw error;
   }
 };
 

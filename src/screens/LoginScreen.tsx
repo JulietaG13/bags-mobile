@@ -154,7 +154,11 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
               automaticallyAdjustKeyboardInsets={true}
               contentInsetAdjustmentBehavior="automatic"
             >
-              <View style={localStyles.container}>
+              <View 
+                style={localStyles.container}
+                testID="login-screen-container"
+                accessibilityLabel="login-screen-container"
+              >
                 {/* Header Section */}
                 <View style={localStyles.headerSection}>
                   <FormHeader
@@ -162,6 +166,8 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
                     subtitle="Sign in to your Bags account to continue managing your finances"
                     showBackButton={true}
                     onBackPress={onBackToWelcome}
+                    testID="login-header"
+                    accessibilityLabel="login-header"
                   />
                 </View>
 
@@ -169,7 +175,11 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
                 <View style={localStyles.spacer} />
 
                 {/* Form Section - Fixed at bottom */}
-                <FormContainer style={localStyles.bottomFormContainer}>
+                <FormContainer 
+                  style={localStyles.bottomFormContainer}
+                  testID="login-form-container"
+                  accessibilityLabel="login-form-container"
+                >
                   <InputField
                     label="Email Address"
                     value={formData.email}
@@ -179,6 +189,8 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
                     keyboardType="email-address"
                     autoCapitalize="none"
                     autoComplete="email"
+                    testID="login-email-input"
+                    accessibilityLabel="login-email-input"
                   />
 
                   <PasswordField
@@ -188,12 +200,24 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
                     error={errors.password}
                     placeholder="Enter your password"
                     showStrengthIndicator={false}
+                    testID="login-password-input"
+                    accessibilityLabel="login-password-input"
                   />
 
                   {/* Show API error if exists */}
                   {error && (
-                    <View style={localStyles.errorContainer}>
-                      <Text style={localStyles.apiErrorText}>{error}</Text>
+                    <View 
+                      style={localStyles.errorContainer}
+                      testID="login-error-container"
+                      accessibilityLabel="login-error-container"
+                    >
+                      <Text 
+                        style={localStyles.apiErrorText}
+                        testID="login-error-text"
+                        accessibilityLabel="login-error-text"
+                      >
+                        {error}
+                      </Text>
                     </View>
                   )}
 
@@ -203,12 +227,16 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
                     loading={loading}
                     variant="primary"
                     style={localStyles.loginButton}
+                    testID="login-submit-button"
+                    accessibilityLabel="login-submit-button"
                   />
 
                   <FormButton
                     title="Don't have an account? Sign Up"
-                    onPress={onGoToRegister}
+                    onPress={onGoToRegister || (() => {})}
                     variant="text"
+                    testID="login-goto-register-button"
+                    accessibilityLabel="login-goto-register-button"
                   />
                 </FormContainer>
               </View>
