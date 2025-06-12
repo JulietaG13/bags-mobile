@@ -18,6 +18,20 @@ export interface AuthResponse {
   message?: string;
 }
 
+export enum ServiceType {
+  BANK = 'BANK',
+  CREDIT_CARD = 'CREDIT_CARD',
+  DEBIT_CARD = 'DEBIT_CARD',
+  VIRTUAL_WALLET = 'VIRTUAL_WALLET',
+}
+
+export interface DebInRequest {
+  externalServiceName: string;
+  serviceType: string;
+  externalEmail: string;
+  amount: number;
+}
+
 export const ValidationRules = {
   email: {
     required: true,

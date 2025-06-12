@@ -257,16 +257,42 @@ export const post = async <T>(
       throw new Error(errorMessage);
     }
 
-    const data = await response.json();
+    // Check if response has content before trying to parse JSON
+    const contentType = response.headers.get('content-type');
+    const contentLength = response.headers.get('content-length');
     
-    // Log successful response with pretty JSON
-    console.log(`[API SUCCESS] POST ${url} - Response Data:`, {
-      summary: getDataSummary(data),
-      timestamp: new Date().toISOString()
-    });
-    
-    // Log the actual JSON data in a pretty format
-    console.log(`[API DATA] POST ${url} - JSON Response:\n${formatJsonForLog(data)}`);
+    let data;
+    if (contentLength === '0' || !contentType || !contentType.includes('application/json')) {
+      // Empty response or non-JSON response - treat as success with empty data
+      data = null;
+      console.log(`[API SUCCESS] POST ${url} - Empty response (success)`, {
+        status: response.status,
+        contentType,
+        contentLength,
+        timestamp: new Date().toISOString()
+      });
+    } else {
+      try {
+        data = await response.json();
+        
+        // Log successful response with pretty JSON
+        console.log(`[API SUCCESS] POST ${url} - Response Data:`, {
+          summary: getDataSummary(data),
+          timestamp: new Date().toISOString()
+        });
+        
+        // Log the actual JSON data in a pretty format
+        console.log(`[API DATA] POST ${url} - JSON Response:\n${formatJsonForLog(data)}`);
+      } catch (jsonError) {
+        // If JSON parsing fails but status is ok, treat as success with empty data
+        console.log(`[API SUCCESS] POST ${url} - Response parsing failed but status OK (treating as success)`, {
+          status: response.status,
+          jsonError: jsonError.message,
+          timestamp: new Date().toISOString()
+        });
+        data = null;
+      }
+    }
 
     return {
       data,

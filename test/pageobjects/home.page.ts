@@ -285,6 +285,52 @@ class HomeScreen {
             return false;
         }
     }
+
+    /**
+     * Get all transfer items in the transfers list
+     */
+    async getTransferItems() {
+        await this.transfersList.waitForDisplayed({ timeout: 10000 });
+        // Transfer items don't have specific testIDs, so we'll find them by their container structure
+        // Each TransferItem is rendered as a View with card styling
+        const transferItems = await this.transfersList.$$('android.view.ViewGroup');
+        return transferItems;
+    }
+
+    /**
+     * Get the count of transfer items
+     */
+    async getTransferItemsCount() {
+        try {
+            const transferItems = await this.getTransferItems();
+            const count = transferItems.length;
+            console.log(`[HOME PAGE] Found ${count} transfer items`);
+            return count;
+        } catch (error) {
+            console.log('[HOME PAGE] Could not get transfer items count, returning 0');
+            return 0;
+        }
+    }
+
+    /**
+     * Verify there is exactly one transfer item
+     */
+    async verifyExactlyOneTransferItem() {
+        await this.waitForTransfersToLoad();
+        const count = await this.getTransferItemsCount();
+        expect(count).toBe(1);
+        console.log('[HOME PAGE] ✓ Verified exactly one transfer item exists');
+        return true;
+    }
+
+    /**
+     * Tap debin tab in bottom navigation
+     */
+    async tapDebinTab() {
+        await this.debinTab.waitForDisplayed({ timeout: 5000 });
+        await this.debinTab.tap();
+        console.log('[HOME PAGE] Debin tab tapped');
+    }
 }
 
 export default new HomeScreen(); 

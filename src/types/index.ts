@@ -1,8 +1,12 @@
-
 export type { 
   CreateWalletRequest, 
   AuthRequest, 
-  AuthResponse 
+  AuthResponse,
+  DebInRequest
+} from './dtos';
+
+export { 
+  ServiceType
 } from './dtos';
 
 export { 
