@@ -100,11 +100,8 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
       });
 
       if (response.success) {
-        Alert.alert(
-          'Login Successful!',
-          `Welcome back to Bags!`,
-          [{ text: 'OK', onPress: onLoginSuccess }]
-        );
+        // Redirect automatically without showing modal
+        onLoginSuccess?.();
       }
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Login failed';

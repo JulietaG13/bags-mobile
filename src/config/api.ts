@@ -3,6 +3,27 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 // Get base URL from environment variables
 const BASE_URL = process.env.EXPO_PUBLIC_BASE_URL || 'http://localhost:8080';
 
+// Global 401 handler - set by the AuthProvider
+let globalUnauthorizedHandler: (() => Promise<void>) | null = null;
+
+export const setGlobalUnauthorizedHandler = (handler: (() => Promise<void>) | null) => {
+  globalUnauthorizedHandler = handler;
+  console.log('[API CONFIG] Global unauthorized handler set', { 
+    hasHandler: !!handler,
+    timestamp: new Date().toISOString()
+  });
+};
+
+const handle401 = async (url: string, status: number) => {
+  if (status === 401 && globalUnauthorizedHandler) {
+    console.log('[API CONFIG] 401 detected, calling global unauthorized handler', {
+      url,
+      timestamp: new Date().toISOString()
+    });
+    await globalUnauthorizedHandler();
+  }
+};
+
 interface RequestOptions {
   headers?: Record<string, string>;
   params?: Record<string, any>;
@@ -12,6 +33,66 @@ interface ApiResponse<T> {
   data: T;
   status: number;
 }
+
+// Helper function to format JSON for pretty logging
+const formatJsonForLog = (data: any, maxDepth = 3): string => {
+  try {
+    return JSON.stringify(data, null, 2);
+  } catch (error) {
+    return '[Unable to stringify data]';
+  }
+};
+
+// Helper function to parse error responses and extract detail and code
+const parseErrorResponse = async (response: Response): Promise<string> => {
+  try {
+    const errorData = await response.json();
+    let errorMessage = `HTTP error! status: ${response.status}`;
+    
+    if (errorData.detail) {
+      errorMessage = errorData.detail;
+      if (errorData.code) {
+        errorMessage += ` (${errorData.code})`;
+      }
+    } else if (errorData.message) {
+      errorMessage = errorData.message;
+      if (errorData.code) {
+        errorMessage += ` (${errorData.code})`;
+      }
+    }
+    
+    return errorMessage;
+  } catch (parseError) {
+    // If we can't parse the error response, return a generic message
+    return `HTTP error! status: ${response.status}`;
+  }
+};
+
+// Helper function to get a summary of response data
+const getDataSummary = (data: any): object => {
+  if (!data) return { isEmpty: true };
+  
+  if (Array.isArray(data)) {
+    return {
+      type: 'array',
+      length: data.length,
+      firstItem: data.length > 0 ? Object.keys(data[0] || {}) : []
+    };
+  }
+  
+  if (typeof data === 'object') {
+    return {
+      type: 'object',
+      keys: Object.keys(data),
+      keyCount: Object.keys(data).length
+    };
+  }
+  
+  return {
+    type: typeof data,
+    value: data
+  };
+};
 
 // Helper function to get auth headers
 const getAuthHeaders = async (): Promise<Record<string, string>> => {
@@ -45,21 +126,56 @@ export const get = async <T>(
   };
 
   const url = buildUrl(endpoint, options.params);
-
-  const response = await fetch(url, {
-    method: 'GET',
-    headers,
+  
+  // Log request start
+  console.log(`[API REQUEST] GET ${url}`, {
+    endpoint,
+    params: options.params,
+    timestamp: new Date().toISOString()
   });
 
-  if (!response.ok) {
-    throw new Error(`HTTP error! status: ${response.status}`);
-  }
+  try {
+    const response = await fetch(url, {
+      method: 'GET',
+      headers,
+    });
 
-  const data = await response.json();
-  return {
-    data,
-    status: response.status,
-  };
+    // Log response status
+    console.log(`[API RESPONSE] GET ${url} - Status: ${response.status}`, {
+      status: response.status,
+      ok: response.ok,
+      statusText: response.statusText,
+      timestamp: new Date().toISOString()
+    });
+
+    // Handle 401 before checking response.ok
+    await handle401(url, response.status);
+
+    if (!response.ok) {
+      console.error(`[API ERROR] GET ${url} - HTTP Error: ${response.status}`);
+      const errorMessage = await parseErrorResponse(response);
+      throw new Error(errorMessage);
+    }
+
+    const data = await response.json();
+    
+    // Log successful response with pretty JSON
+    console.log(`[API SUCCESS] GET ${url} - Response Data:`, {
+      summary: getDataSummary(data),
+      timestamp: new Date().toISOString()
+    });
+    
+    // Log the actual JSON data in a pretty format
+    console.log(`[API DATA] GET ${url} - JSON Response:\n${formatJsonForLog(data)}`);
+
+    return {
+      data,
+      status: response.status,
+    };
+  } catch (error) {
+    console.error(`[API ERROR] GET ${url} - Request failed:`, error);
+    throw error;
+  }
 };
 
 // Generic POST request
@@ -76,22 +192,64 @@ export const post = async <T>(
   };
 
   const url = buildUrl(endpoint, options.params);
-
-  const response = await fetch(url, {
-    method: 'POST',
-    headers,
-    body: JSON.stringify(body),
+  
+  // Log request start with pretty request body
+  console.log(`[API REQUEST] POST ${url}`, {
+    endpoint,
+    hasBody: !!body,
+    bodyType: typeof body,
+    params: options.params,
+    timestamp: new Date().toISOString()
   });
-
-  if (!response.ok) {
-    throw new Error(`HTTP error! status: ${response.status}`);
+  
+  // Log the request body in pretty format
+  if (body) {
+    console.log(`[API REQUEST BODY] POST ${url}:\n${formatJsonForLog(body)}`);
   }
 
-  const data = await response.json();
-  return {
-    data,
-    status: response.status,
-  };
+  try {
+    const response = await fetch(url, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify(body),
+    });
+
+    // Log response status
+    console.log(`[API RESPONSE] POST ${url} - Status: ${response.status}`, {
+      status: response.status,
+      ok: response.ok,
+      statusText: response.statusText,
+      timestamp: new Date().toISOString()
+    });
+
+    // Handle 401 before checking response.ok
+    await handle401(url, response.status);
+
+    if (!response.ok) {
+      console.error(`[API ERROR] POST ${url} - HTTP Error: ${response.status}`);
+      const errorMessage = await parseErrorResponse(response);
+      throw new Error(errorMessage);
+    }
+
+    const data = await response.json();
+    
+    // Log successful response with pretty JSON
+    console.log(`[API SUCCESS] POST ${url} - Response Data:`, {
+      summary: getDataSummary(data),
+      timestamp: new Date().toISOString()
+    });
+    
+    // Log the actual JSON data in a pretty format
+    console.log(`[API DATA] POST ${url} - JSON Response:\n${formatJsonForLog(data)}`);
+
+    return {
+      data,
+      status: response.status,
+    };
+  } catch (error) {
+    console.error(`[API ERROR] POST ${url} - Request failed:`, error);
+    throw error;
+  }
 };
 
 // Generic PUT request
@@ -108,22 +266,64 @@ export const put = async <T>(
   };
 
   const url = buildUrl(endpoint, options.params);
-
-  const response = await fetch(url, {
-    method: 'PUT',
-    headers,
-    body: JSON.stringify(body),
+  
+  // Log request start with pretty request body
+  console.log(`[API REQUEST] PUT ${url}`, {
+    endpoint,
+    hasBody: !!body,
+    bodyType: typeof body,
+    params: options.params,
+    timestamp: new Date().toISOString()
   });
-
-  if (!response.ok) {
-    throw new Error(`HTTP error! status: ${response.status}`);
+  
+  // Log the request body in pretty format
+  if (body) {
+    console.log(`[API REQUEST BODY] PUT ${url}:\n${formatJsonForLog(body)}`);
   }
 
-  const data = await response.json();
-  return {
-    data,
-    status: response.status,
-  };
+  try {
+    const response = await fetch(url, {
+      method: 'PUT',
+      headers,
+      body: JSON.stringify(body),
+    });
+
+    // Log response status
+    console.log(`[API RESPONSE] PUT ${url} - Status: ${response.status}`, {
+      status: response.status,
+      ok: response.ok,
+      statusText: response.statusText,
+      timestamp: new Date().toISOString()
+    });
+
+    // Handle 401 before checking response.ok
+    await handle401(url, response.status);
+
+    if (!response.ok) {
+      console.error(`[API ERROR] PUT ${url} - HTTP Error: ${response.status}`);
+      const errorMessage = await parseErrorResponse(response);
+      throw new Error(errorMessage);
+    }
+
+    const data = await response.json();
+    
+    // Log successful response with pretty JSON
+    console.log(`[API SUCCESS] PUT ${url} - Response Data:`, {
+      summary: getDataSummary(data),
+      timestamp: new Date().toISOString()
+    });
+    
+    // Log the actual JSON data in a pretty format
+    console.log(`[API DATA] PUT ${url} - JSON Response:\n${formatJsonForLog(data)}`);
+
+    return {
+      data,
+      status: response.status,
+    };
+  } catch (error) {
+    console.error(`[API ERROR] PUT ${url} - Request failed:`, error);
+    throw error;
+  }
 };
 
 // Generic DELETE request
@@ -139,21 +339,56 @@ export const del = async <T>(
   };
 
   const url = buildUrl(endpoint, options.params);
-
-  const response = await fetch(url, {
-    method: 'DELETE',
-    headers,
+  
+  // Log request start
+  console.log(`[API REQUEST] DELETE ${url}`, {
+    endpoint,
+    params: options.params,
+    timestamp: new Date().toISOString()
   });
 
-  if (!response.ok) {
-    throw new Error(`HTTP error! status: ${response.status}`);
-  }
+  try {
+    const response = await fetch(url, {
+      method: 'DELETE',
+      headers,
+    });
 
-  const data = await response.json();
-  return {
-    data,
-    status: response.status,
-  };
+    // Log response status
+    console.log(`[API RESPONSE] DELETE ${url} - Status: ${response.status}`, {
+      status: response.status,
+      ok: response.ok,
+      statusText: response.statusText,
+      timestamp: new Date().toISOString()
+    });
+
+    // Handle 401 before checking response.ok
+    await handle401(url, response.status);
+
+    if (!response.ok) {
+      console.error(`[API ERROR] DELETE ${url} - HTTP Error: ${response.status}`);
+      const errorMessage = await parseErrorResponse(response);
+      throw new Error(errorMessage);
+    }
+
+    const data = await response.json();
+    
+    // Log successful response with pretty JSON
+    console.log(`[API SUCCESS] DELETE ${url} - Response Data:`, {
+      summary: getDataSummary(data),
+      timestamp: new Date().toISOString()
+    });
+    
+    // Log the actual JSON data in a pretty format
+    console.log(`[API DATA] DELETE ${url} - JSON Response:\n${formatJsonForLog(data)}`);
+
+    return {
+      data,
+      status: response.status,
+    };
+  } catch (error) {
+    console.error(`[API ERROR] DELETE ${url} - Request failed:`, error);
+    throw error;
+  }
 };
 
 export const API_CONFIG = {
@@ -188,4 +423,4 @@ export const getBaseUrl = () => {
   return BASE_URL;
 };
 
-export default API_CONFIG; 
+export default API_CONFIG;

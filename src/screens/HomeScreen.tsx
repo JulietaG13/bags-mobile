@@ -7,28 +7,41 @@ import {
   RefreshControl,
   ActivityIndicator,
   Alert,
+  TouchableOpacity,
 } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import TransferItem from '../components/TransferItem';
 import { useWallet } from '../hooks/useWallet';
 import { useTransferHistory } from '../hooks/useTransferHistory';
 import { useAuth } from '../hooks/useAuth';
+import { theme, createStyles, createScreenStyles } from '../constants';
 
 interface HomeScreenProps {
-  // Props for potential future customization
+  onSendMoney?: () => void;
+  onRequestMoney?: () => void;
+  onViewHistory?: () => void;
+  onSignOut?: () => void;
 }
 
-const HomeScreen: React.FC<HomeScreenProps> = () => {
+const HomeScreen: React.FC<HomeScreenProps> = ({
+  onSendMoney,
+  onRequestMoney,
+  onViewHistory,
+  onSignOut,
+}) => {
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [isBalanceVisible, setIsBalanceVisible] = useState(true);
   
-  // Use real hooks for data
-  const { userEmail } = useAuth();
-  const { walletInfo, isLoading: walletLoading, refetch: refetchWallet } = useWallet();
+  const { userEmail, token, logout } = useAuth();
+  const { walletInfo, isLoading: walletLoading, refetch: refetchWallet } = useWallet(token);
   const { 
     transferHistory, 
     isLoading: transfersLoading, 
     refetch: refetchTransfers 
-  } = useTransferHistory();
+  } = useTransferHistory(token);
+
+  const styles = createStyles(theme);
+  const screenStyles = createScreenStyles(theme);
 
   const handleRefresh = async () => {
     setIsRefreshing(true);
@@ -44,78 +57,166 @@ const HomeScreen: React.FC<HomeScreenProps> = () => {
     }
   };
 
+  const handleSignOut = () => {
+    Alert.alert(
+      'Sign Out',
+      'Are you sure you want to sign out?',
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        {
+          text: 'Sign Out',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              await logout();
+              console.log('[HOME SCREEN] User signed out successfully');
+              if (onSignOut) {
+                onSignOut();
+              }
+            } catch (error) {
+              console.error('[HOME SCREEN] Error signing out:', error);
+              Alert.alert('Error', 'Failed to sign out. Please try again.');
+            }
+          },
+        },
+      ],
+    );
+  };
+
+  const toggleBalanceVisibility = () => {
+    setIsBalanceVisible(!isBalanceVisible);
+    console.log('[HOME SCREEN] Balance visibility toggled', {
+      isVisible: !isBalanceVisible,
+      timestamp: new Date().toISOString()
+    });
+  };
+
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, localStyles.container]}>
       <ScrollView
-        style={styles.scrollView}
+        style={localStyles.scrollView}
         refreshControl={
           <RefreshControl
             refreshing={isRefreshing}
             onRefresh={handleRefresh}
-            tintColor="#007AFF"
+            tintColor={theme.colors.text.primary}
           />
         }
         showsVerticalScrollIndicator={false}
       >
         {/* Header */}
-        <View style={styles.header}>
-          <Text style={styles.greeting}>Welcome back!</Text>
-          <MaterialIcons name="notifications-none" size={24} color="#000" />
+        <View style={[screenStyles.dashboard.header, localStyles.header]}>
+          <View style={localStyles.headerContent}>
+            <Text style={[styles.text.heading, localStyles.greeting]}>Welcome back!</Text>
+            <TouchableOpacity 
+              onPress={handleSignOut}
+              activeOpacity={0.7}
+              style={localStyles.signOutButton}
+            >
+              <MaterialIcons 
+                name="logout" 
+                size={24} 
+                color={theme.colors.text.primary}
+              />
+            </TouchableOpacity>
+          </View>
         </View>
 
         {/* Balance Card */}
-        <View style={styles.balanceCard}>
-          <View style={styles.balanceHeader}>
-            <Text style={styles.balanceLabel}>Current Balance</Text>
-            <MaterialIcons name="visibility" size={20} color="#8E8E93" />
+        <View style={[screenStyles.dashboard.balanceCard, localStyles.balanceCard]}>
+          <View style={localStyles.balanceHeader}>
+            <Text style={[styles.text.secondary, localStyles.balanceLabel]}>Current Balance</Text>
+            <TouchableOpacity 
+              onPress={toggleBalanceVisibility}
+              activeOpacity={0.7}
+              style={localStyles.eyeButton}
+            >
+              <MaterialIcons 
+                name={isBalanceVisible ? "visibility" : "visibility-off"} 
+                size={20} 
+                color={theme.colors.text.tertiary}
+              />
+            </TouchableOpacity>
           </View>
-          <Text style={styles.balanceAmount}>
-            {walletInfo?.currency || 'USD'} ${walletInfo?.balance.amount.toFixed(2) || '0.00'}
+          <Text style={[styles.financial.balance, localStyles.balanceAmount]}>
+            {isBalanceVisible 
+              ? `${walletInfo?.currency || 'USD'} $${walletInfo?.balance.amount.toFixed(2) || '0.00'}`
+              : `${walletInfo?.currency || 'USD'} $••••••`
+            }
           </Text>
-          <Text style={styles.balanceSubtext}>Available to spend</Text>
         </View>
 
         {/* Quick Actions */}
-        <View style={styles.quickActions}>
-          <Text style={styles.sectionTitle}>Quick Actions</Text>
-          <View style={styles.actionButtons}>
-            <View style={styles.actionButton}>
-              <View style={styles.actionIcon}>
-                <MaterialIcons name="send" size={24} color="#007AFF" />
+        <View style={localStyles.quickActions}>
+          <Text style={[styles.text.heading, localStyles.sectionTitle]}>Quick Actions</Text>
+          <View style={localStyles.actionButtons}>
+            <TouchableOpacity 
+              style={localStyles.actionButton}
+              onPress={onSendMoney}
+              activeOpacity={0.7}
+            >
+              <View style={[styles.cardElevated, localStyles.actionIcon]}>
+                <MaterialIcons 
+                  name="send" 
+                  size={24} 
+                  color={theme.colors.text.primary}
+                />
               </View>
-              <Text style={styles.actionText}>Send Money</Text>
-            </View>
-            <View style={styles.actionButton}>
-              <View style={styles.actionIcon}>
-                <MaterialIcons name="account-balance-wallet" size={24} color="#34C759" />
+              <Text style={[styles.text.secondary, localStyles.actionText]}>Send Money</Text>
+            </TouchableOpacity>
+            <TouchableOpacity 
+              style={localStyles.actionButton}
+              onPress={onRequestMoney}
+              activeOpacity={0.7}
+            >
+              <View style={[styles.cardElevated, localStyles.actionIcon]}>
+                <MaterialIcons 
+                  name="account-balance-wallet" 
+                  size={24} 
+                  color={theme.colors.text.primary}
+                />
               </View>
-              <Text style={styles.actionText}>Request</Text>
-            </View>
-            <View style={styles.actionButton}>
-              <View style={styles.actionIcon}>
-                <MaterialIcons name="history" size={24} color="#FF9500" />
+              <Text style={[styles.text.secondary, localStyles.actionText]}>Request</Text>
+            </TouchableOpacity>
+            <TouchableOpacity 
+              style={localStyles.actionButton}
+              onPress={onViewHistory}
+              activeOpacity={0.7}
+            >
+              <View style={[styles.cardElevated, localStyles.actionIcon]}>
+                <MaterialIcons 
+                  name="history" 
+                  size={24} 
+                  color={theme.colors.text.primary}
+                />
               </View>
-              <Text style={styles.actionText}>History</Text>
-            </View>
+              <Text style={[styles.text.secondary, localStyles.actionText]}>History</Text>
+            </TouchableOpacity>
           </View>
         </View>
 
         {/* Recent Transfers */}
-        <View style={styles.transfersSection}>
-          <View style={styles.transfersHeader}>
-            <Text style={styles.sectionTitle}>Recent Transfers</Text>
-            <Text style={styles.seeAll}>See All</Text>
+        <View style={localStyles.transfersSection}>
+          <View style={localStyles.transfersHeader}>
+            <Text style={[styles.text.heading, localStyles.sectionTitle]}>Recent Transfers</Text>
+            <Text style={[styles.text.primary, localStyles.seeAll]}>See All</Text>
           </View>
           
           {walletLoading || transfersLoading ? (
-            <View style={styles.loadingContainer}>
-              <ActivityIndicator size="small" color="#007AFF" />
+            <View style={localStyles.loadingContainer}>
+              <ActivityIndicator 
+                size="small" 
+                color={theme.colors.text.primary}
+              />
             </View>
           ) : (
-            <View style={styles.transfersList}>
+            <View style={localStyles.transfersList}>
               {transferHistory?.content.map((transfer) => (
                 <TransferItem
-                  key={transfer.transferNumber}
+                  key={transfer.id}
                   transfer={transfer}
                   currentUserEmail={userEmail || 'user@example.com'}
                 />
@@ -128,65 +229,63 @@ const HomeScreen: React.FC<HomeScreenProps> = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const localStyles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: '#F2F2F7',
+    backgroundColor: theme.colors.background.primary,
   },
   scrollView: {
     flex: 1,
   },
   header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 20,
-    paddingTop: 60,
-    paddingBottom: 20,
+    paddingHorizontal: theme.spacing.screen.horizontal,
+    paddingTop: theme.spacing.screen.top,
+    paddingBottom: theme.spacing.lg,
   },
   greeting: {
     fontSize: 24,
     fontWeight: '700',
-    color: '#000000',
+    color: theme.colors.text.primary,
   },
   balanceCard: {
-    backgroundColor: '#007AFF',
-    marginHorizontal: 20,
-    borderRadius: 16,
-    padding: 24,
-    marginBottom: 24,
+    backgroundColor: theme.colors.background.primary,
+    marginHorizontal: theme.spacing.md,
+    borderRadius: theme.layout.component.radiusLarge,
+    padding: theme.spacing.lg,
+    marginBottom: theme.spacing.lg,
+    shadowColor: theme.colors.shadow.dark,
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 1,
+    shadowRadius: 8,
+    elevation: 6,
   },
   balanceHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 8,
+    marginBottom: theme.spacing.sm,
   },
   balanceLabel: {
     fontSize: 16,
-    color: '#FFFFFF',
-    opacity: 0.8,
+    color: theme.colors.text.secondary,
   },
   balanceAmount: {
     fontSize: 32,
     fontWeight: '700',
-    color: '#FFFFFF',
-    marginBottom: 4,
-  },
-  balanceSubtext: {
-    fontSize: 14,
-    color: '#FFFFFF',
-    opacity: 0.8,
+    color: theme.colors.financial.balance,
+    marginBottom: theme.spacing.xs,
   },
   quickActions: {
-    paddingHorizontal: 20,
-    marginBottom: 24,
+    paddingHorizontal: theme.spacing.screen.horizontal,
+    marginBottom: theme.spacing.lg,
   },
   sectionTitle: {
     fontSize: 20,
     fontWeight: '600',
-    color: '#000000',
-    marginBottom: 16,
+    color: theme.colors.text.primary,
+    marginBottom: theme.spacing.md,
   },
   actionButtons: {
     flexDirection: 'row',
@@ -200,23 +299,17 @@ const styles = StyleSheet.create({
     width: 56,
     height: 56,
     borderRadius: 28,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: theme.colors.background.primary,
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 8,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+    marginBottom: theme.spacing.sm,
+    borderWidth: 1,
+    borderColor: theme.colors.border.light,
   },
   actionText: {
     fontSize: 12,
     fontWeight: '500',
-    color: '#000000',
+    color: theme.colors.text.primary,
     textAlign: 'center',
   },
   transfersSection: {
@@ -226,20 +319,38 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 20,
-    marginBottom: 16,
+    paddingHorizontal: theme.spacing.screen.horizontal,
+    marginBottom: theme.spacing.md,
   },
   seeAll: {
     fontSize: 16,
-    color: '#007AFF',
+    color: theme.colors.text.primary,
     fontWeight: '500',
+    textDecorationLine: 'underline',
   },
   transfersList: {
-    gap: 8,
+    gap: theme.spacing.xs,
   },
   loadingContainer: {
     alignItems: 'center',
-    paddingVertical: 20,
+    paddingVertical: theme.spacing.lg,
+  },
+  eyeButton: {
+    padding: theme.spacing.xs,
+    borderRadius: theme.layout.component.radiusSmall,
+    marginLeft: theme.spacing.xs,
+    marginRight: -theme.spacing.xs,
+  },
+  headerContent: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  signOutButton: {
+    padding: theme.spacing.xs,
+    borderRadius: theme.layout.component.radiusSmall,
+    marginLeft: theme.spacing.xs,
+    marginRight: -theme.spacing.xs,
   },
 });
 

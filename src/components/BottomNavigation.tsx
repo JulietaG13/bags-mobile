@@ -1,6 +1,7 @@
 import React from 'react';
-import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
+import { theme } from '../constants';
 
 export type TabType = 'send' | 'home' | 'debin';
 
@@ -27,11 +28,11 @@ const BottomNavigation: React.FC<BottomNavigationProps> = ({ activeTab, onTabPre
           <MaterialIcons
             name={tab.icon}
             size={24}
-            color={activeTab === tab.id ? '#007AFF' : '#8E8E93'}
+            color={activeTab === tab.id ? theme.colors.text.primary : theme.colors.text.tertiary}
           />
           <Text style={[
             styles.tabLabel,
-            { color: activeTab === tab.id ? '#007AFF' : '#8E8E93' }
+            { color: activeTab === tab.id ? theme.colors.text.primary : theme.colors.text.tertiary }
           ]}>
             {tab.label}
           </Text>
@@ -44,30 +45,30 @@ const BottomNavigation: React.FC<BottomNavigationProps> = ({ activeTab, onTabPre
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    backgroundColor: '#FFFFFF',
-    paddingTop: 8,
-    paddingBottom: 20,
-    paddingHorizontal: 16,
+    backgroundColor: theme.colors.background.primary, // Pure white
+    paddingTop: theme.spacing.sm,
+    paddingBottom: theme.spacing.lg,
+    paddingHorizontal: theme.spacing.md,
     borderTopWidth: 1,
-    borderTopColor: '#E5E5EA',
-    shadowColor: '#000',
+    borderTopColor: theme.colors.border.light, // Light gray border
+    shadowColor: theme.colors.shadow.medium,
     shadowOffset: {
       width: 0,
       height: -2,
     },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
+    shadowOpacity: 1,
+    shadowRadius: 4,
     elevation: 8,
   },
   tab: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 4,
+    paddingVertical: theme.spacing.xs,
   },
   tabLabel: {
     fontSize: 12,
-    marginTop: 4,
+    marginTop: theme.spacing.xs,
     fontWeight: '500',
   },
 });

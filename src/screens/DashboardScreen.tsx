@@ -5,12 +5,34 @@ import HomeScreen from './HomeScreen';
 import SendScreen from './SendScreen';
 import DebinScreen from './DebinScreen';
 import BottomNavigation, { TabType } from '../components/BottomNavigation';
+import { theme } from '../constants';
 
-const DashboardScreen: React.FC = () => {
+interface DashboardScreenProps {
+  onSignOut?: () => void;
+}
+
+const DashboardScreen: React.FC<DashboardScreenProps> = ({ onSignOut }) => {
   const [activeTab, setActiveTab] = useState<TabType>('home');
 
   const handleTabPress = (tab: TabType) => {
     setActiveTab(tab);
+  };
+
+  // Navigation functions for HomeScreen quick actions
+  const handleSendMoney = () => {
+    console.log('[DASHBOARD] Send Money quick action pressed');
+    setActiveTab('send');
+  };
+
+  const handleRequestMoney = () => {
+    console.log('[DASHBOARD] Request Money quick action pressed');
+    setActiveTab('debin');
+  };
+
+  const handleViewHistory = () => {
+    // Could navigate to a dedicated history screen or show all transfers
+    console.log('[DASHBOARD] View History quick action pressed');
+    // For now, we'll stay on home screen since we don't have a dedicated history screen
   };
 
   const renderActiveScreen = () => {
@@ -18,11 +40,25 @@ const DashboardScreen: React.FC = () => {
       case 'send':
         return <SendScreen />;
       case 'home':
-        return <HomeScreen />;
+        return (
+          <HomeScreen 
+            onSendMoney={handleSendMoney}
+            onRequestMoney={handleRequestMoney}
+            onViewHistory={handleViewHistory}
+            onSignOut={onSignOut}
+          />
+        );
       case 'debin':
         return <DebinScreen />;
       default:
-        return <HomeScreen />;
+        return (
+          <HomeScreen 
+            onSendMoney={handleSendMoney}
+            onRequestMoney={handleRequestMoney}
+            onViewHistory={handleViewHistory}
+            onSignOut={onSignOut}
+          />
+        );
     }
   };
 
@@ -43,7 +79,7 @@ const DashboardScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F2F2F7',
+    backgroundColor: theme.colors.background.primary, // Pure white
   },
   content: {
     flex: 1,
