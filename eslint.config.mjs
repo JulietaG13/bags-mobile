@@ -13,6 +13,7 @@ export default defineConfig([
       'react/react-in-jsx-scope': 'off',
       '@typescript-eslint/no-unused-vars': ['warn', { varsIgnorePattern: '^_' }],
       '@typescript-eslint/no-explicit-any': 'off',
+      '@typescript-eslint/no-require-imports': 'off',
     },
   },
 ]);
