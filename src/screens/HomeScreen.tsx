@@ -20,6 +20,7 @@ interface HomeScreenProps {
   onSendMoney?: () => void;
   onRequestMoney?: () => void;
   onViewHistory?: () => void;
+  onSeeAllTransfers?: () => void;
   onSignOut?: () => void;
 }
 
@@ -27,6 +28,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({
   onSendMoney,
   onRequestMoney,
   onViewHistory,
+  onSeeAllTransfers,
   onSignOut,
 }) => {
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -290,13 +292,20 @@ const HomeScreen: React.FC<HomeScreenProps> = ({
             >
               Recent Transfers
             </Text>
-            <Text 
-              style={[styles.text.primary, localStyles.seeAll]}
-              testID="home-see-all-transfers"
-              accessibilityLabel="home-see-all-transfers"
+            <TouchableOpacity 
+              onPress={onSeeAllTransfers}
+              activeOpacity={0.7}
+              testID="home-see-all-transfers-button"
+              accessibilityLabel="home-see-all-transfers-button"
             >
-              See All
-            </Text>
+              <Text 
+                style={[styles.text.primary, localStyles.seeAll]}
+                testID="home-see-all-transfers"
+                accessibilityLabel="home-see-all-transfers"
+              >
+                See All
+              </Text>
+            </TouchableOpacity>
           </View>
           
           {walletLoading || transfersLoading ? (

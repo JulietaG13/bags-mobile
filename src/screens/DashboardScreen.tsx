@@ -4,6 +4,7 @@ import { StatusBar } from 'expo-status-bar';
 import HomeScreen from './HomeScreen';
 import SendScreen from './SendScreen';
 import DebinScreen from './DebinScreen';
+import HistoryScreen from './HistoryScreen';
 import BottomNavigation, { TabType } from '../components/BottomNavigation';
 import { theme } from '../constants';
 
@@ -13,29 +14,47 @@ interface DashboardScreenProps {
 
 const DashboardScreen: React.FC<DashboardScreenProps> = ({ onSignOut }) => {
   const [activeTab, setActiveTab] = useState<TabType>('home');
+  const [showHistory, setShowHistory] = useState(false);
 
   const handleTabPress = (tab: TabType) => {
     setActiveTab(tab);
+    setShowHistory(false); // Hide history when switching tabs
   };
 
   // Navigation functions for HomeScreen quick actions
   const handleSendMoney = () => {
     console.log('[DASHBOARD] Send Money quick action pressed');
     setActiveTab('send');
+    setShowHistory(false);
   };
 
   const handleRequestMoney = () => {
     console.log('[DASHBOARD] Request Money quick action pressed');
     setActiveTab('debin');
+    setShowHistory(false);
   };
 
   const handleViewHistory = () => {
-    // Could navigate to a dedicated history screen or show all transfers
     console.log('[DASHBOARD] View History quick action pressed');
-    // For now, we'll stay on home screen since we don't have a dedicated history screen
+    setShowHistory(true);
+  };
+
+  const handleSeeAllTransfers = () => {
+    console.log('[DASHBOARD] See All transfers pressed');
+    setShowHistory(true);
+  };
+
+  const handleBackFromHistory = () => {
+    console.log('[DASHBOARD] Back from history pressed');
+    setShowHistory(false);
   };
 
   const renderActiveScreen = () => {
+    // Show history screen if requested
+    if (showHistory) {
+      return <HistoryScreen onBack={handleBackFromHistory} />;
+    }
+
     switch (activeTab) {
       case 'send':
         return <SendScreen />;
@@ -45,6 +64,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({ onSignOut }) => {
             onSendMoney={handleSendMoney}
             onRequestMoney={handleRequestMoney}
             onViewHistory={handleViewHistory}
+            onSeeAllTransfers={handleSeeAllTransfers}
             onSignOut={onSignOut}
           />
         );
@@ -56,6 +76,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({ onSignOut }) => {
             onSendMoney={handleSendMoney}
             onRequestMoney={handleRequestMoney}
             onViewHistory={handleViewHistory}
+            onSeeAllTransfers={handleSeeAllTransfers}
             onSignOut={onSignOut}
           />
         );
