@@ -21,9 +21,11 @@ class HomeScreen {
 
     // Transfers section
     get transfersSection() { return $('~home-transfers-section'); }
+    get transfersTitle() { return $('~home-transfers-title'); }
     get seeAllTransfers() { return $('~home-see-all-transfers'); }
-    get loadingContainer() { return $('~home-loading-container'); }
+    get seeAllTransfersButton() { return $('~home-see-all-transfers-button'); }
     get transfersList() { return $('~home-transfers-list'); }
+    get loadingContainer() { return $('~home-loading-container'); }
 
     // Bottom Navigation
     get bottomNavigationContainer() { return $('~bottom-navigation-container'); }
@@ -117,12 +119,12 @@ class HomeScreen {
     }
 
     /**
-     * Tap see all transfers
+     * Tap see all transfers button
      */
     async tapSeeAllTransfers() {
-        await this.seeAllTransfers.waitForDisplayed({ timeout: 5000 });
-        await this.seeAllTransfers.tap();
-        console.log('[HOME PAGE] See all transfers tapped');
+        await this.seeAllTransfersButton.waitForDisplayed({ timeout: 5000 });
+        await this.seeAllTransfersButton.tap();
+        console.log('[HOME PAGE] See all transfers button tapped');
     }
 
     /**
