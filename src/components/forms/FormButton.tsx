@@ -9,6 +9,8 @@ interface FormButtonProps {
   loading?: boolean;
   disabled?: boolean;
   style?: any;
+  testID?: string;
+  accessibilityLabel?: string;
 }
 
 export const FormButton: React.FC<FormButtonProps> = ({
@@ -18,6 +20,8 @@ export const FormButton: React.FC<FormButtonProps> = ({
   loading = false,
   disabled = false,
   style,
+  testID,
+  accessibilityLabel,
 }) => {
   const isDisabled = disabled || loading;
 
@@ -75,6 +79,8 @@ export const FormButton: React.FC<FormButtonProps> = ({
       onPress={onPress}
       disabled={isDisabled}
       activeOpacity={0.8}
+      testID={testID}
+      accessibilityLabel={accessibilityLabel}
     >
       {loading ? (
         <ActivityIndicator 

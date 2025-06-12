@@ -115,7 +115,7 @@ class WelcomeScreenPage extends Page {
      */
     public async tapGetStarted() {
         await this.getStartedButton.waitForDisplayed({ timeout: 15000 });
-        await this.getStartedButton.waitForEnabled({ timeout: 15000 });
+        await this.getStartedButton.waitForEnabled({ timeout: 10000 });
         await this.getStartedButton.click();
     }
 

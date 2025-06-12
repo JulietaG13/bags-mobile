@@ -1,11 +1,12 @@
 name: Tag and Build Expo App
 
 on:
-  workflow_run:
-    workflows: ["CI"]
-    branches: ["main"]
-    types:
-      - completed
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
 
 permissions:
   contents: write

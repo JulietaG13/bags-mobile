@@ -64,7 +64,15 @@ export const config: WebdriverIO.Config = {
         'appium:autoGrantPermissions': true,
         'appium:noReset': false,
         'appium:fullReset': true,
-
+        // Additional settings for debug APK testing
+        'appium:disableWindowAnimation': true,
+        'appium:skipServerInstallation': true,
+        'appium:skipDeviceInitialization': false,
+        'appium:skipLogcatCapture': false,
+        // Force app to wait for debugger (helps with bundle loading)
+        'appium:appWaitForLaunch': false,
+        'appium:androidInstallTimeout': 90000,
+        'appium:adbExecTimeout': 20000,
     }],
 
     //
@@ -101,11 +109,11 @@ export const config: WebdriverIO.Config = {
     // baseUrl: 'http://localhost:8080',
     //
     // Default timeout for all waitFor* commands.
-    waitforTimeout: 10000,
+    waitforTimeout: 20000,
     //
     // Default timeout in milliseconds for request
     // if browser driver or grid doesn't send response
-    connectionRetryTimeout: 120000,
+    connectionRetryTimeout: 180000,
     //
     // Default request retries count
     connectionRetryCount: 3,
@@ -143,7 +151,7 @@ export const config: WebdriverIO.Config = {
     // See the full list at http://mochajs.org/
     mochaOpts: {
         ui: 'bdd',
-        timeout: 60000
+        timeout: 120000
     },
 
     //

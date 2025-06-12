@@ -1,16 +1,26 @@
 // Main Theme Configuration for Bags Mobile - Digital Wallet App
 // Combines all design tokens into a cohesive theme system
+// Minimal Black & White Design with Essential Utility Colors
 
 import { Colors, LightTheme, DarkTheme } from './colors';
 import { Typography } from './typography';
 import { Spacing, Layout, Animation } from './spacing';
 
-// Main theme interface with flexible color types
+// Main theme interface with simplified color types
 export interface Theme {
   colors: {
     primary: typeof Colors.primary;
     secondary: typeof Colors.secondary;
-    semantic: typeof Colors.semantic;
+    semantic: {
+      success: string;
+      error: string;
+      warning: string;
+      info: string;
+      successLight: string;
+      errorLight: string;
+      warningLight: string;
+      infoLight: string;
+    };
     neutral: typeof Colors.neutral;
     text: {
       primary: string;
@@ -19,12 +29,15 @@ export interface Theme {
       inverse: string;
       disabled: string;
       link: string;
+      placeholder: string;
     };
     background: {
       primary: string;
       secondary: string;
       tertiary: string;
+      quaternary: string;
       overlay: string;
+      modal: string;
     };
     financial: typeof Colors.financial;
     status: typeof Colors.status;
@@ -39,7 +52,7 @@ export interface Theme {
   isDark: boolean;
 }
 
-// Light theme configuration
+// Light theme configuration - Pure black and white
 export const lightTheme: Theme = {
   colors: LightTheme,
   typography: Typography,
@@ -49,7 +62,7 @@ export const lightTheme: Theme = {
   isDark: false,
 };
 
-// Dark theme configuration
+// Dark theme configuration - Inverted black and white
 export const darkTheme: Theme = {
   colors: DarkTheme,
   typography: Typography,
@@ -67,9 +80,9 @@ export const getTheme = (isDark: boolean = false): Theme => {
   return isDark ? darkTheme : lightTheme;
 };
 
-// Common component styles using theme
+// Common component styles using minimal theme
 export const createStyles = (theme: Theme) => ({
-  // Container styles
+  // Container styles - Pure backgrounds
   container: {
     flex: 1,
     backgroundColor: theme.colors.background.primary,
@@ -81,25 +94,44 @@ export const createStyles = (theme: Theme) => ({
     paddingHorizontal: theme.spacing.screen.horizontal,
   },
 
-  // Card styles
+  // Card styles - Minimal shadows and borders
   card: {
     backgroundColor: theme.colors.background.primary,
     borderRadius: theme.layout.component.radiusMedium,
     padding: theme.spacing.component.cardMedium,
+    borderWidth: 1,
+    borderColor: theme.colors.border.light,
+    // Minimal shadow - black only
     shadowColor: theme.colors.shadow.medium,
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 1,
+    shadowRadius: 2,
+    elevation: 2,
+  },
+
+  // Elevated card - Slightly more shadow
+  cardElevated: {
+    backgroundColor: theme.colors.background.primary,
+    borderRadius: theme.layout.component.radiusMedium,
+    padding: theme.spacing.component.cardMedium,
+    // Stronger shadow for important elements
+    shadowColor: theme.colors.shadow.dark,
     shadowOffset: {
       width: 0,
       height: 2,
     },
-    shadowOpacity: 0.1,
+    shadowOpacity: 1,
     shadowRadius: 4,
-    elevation: 3,
+    elevation: 4,
   },
 
-  // Button styles
+  // Button styles - Black and white only
   button: {
     primary: {
-      backgroundColor: theme.colors.primary.main,
+      backgroundColor: theme.colors.primary.main, // Pure black
       paddingVertical: theme.spacing.component.buttonMedium.vertical,
       paddingHorizontal: theme.spacing.component.buttonMedium.horizontal,
       borderRadius: theme.layout.component.radiusMedium,
@@ -108,9 +140,18 @@ export const createStyles = (theme: Theme) => ({
       minHeight: theme.layout.component.buttonMedium,
     },
     secondary: {
-      backgroundColor: 'transparent',
+      backgroundColor: theme.colors.background.primary, // White
       borderWidth: 1,
-      borderColor: theme.colors.border.medium,
+      borderColor: theme.colors.border.dark, // Visible border
+      paddingVertical: theme.spacing.component.buttonMedium.vertical,
+      paddingHorizontal: theme.spacing.component.buttonMedium.horizontal,
+      borderRadius: theme.layout.component.radiusMedium,
+      alignItems: 'center' as const,
+      justifyContent: 'center' as const,
+      minHeight: theme.layout.component.buttonMedium,
+    },
+    tertiary: {
+      backgroundColor: 'transparent',
       paddingVertical: theme.spacing.component.buttonMedium.vertical,
       paddingHorizontal: theme.spacing.component.buttonMedium.horizontal,
       borderRadius: theme.layout.component.radiusMedium,
@@ -120,7 +161,7 @@ export const createStyles = (theme: Theme) => ({
     },
   },
 
-  // Text styles
+  // Text styles - Black hierarchy
   text: {
     primary: {
       color: theme.colors.text.primary,
@@ -132,18 +173,28 @@ export const createStyles = (theme: Theme) => ({
       fontSize: theme.typography.fontSize.sm,
       fontWeight: theme.typography.fontWeight.normal,
     },
+    tertiary: {
+      color: theme.colors.text.tertiary,
+      fontSize: theme.typography.fontSize.sm,
+      fontWeight: theme.typography.fontWeight.normal,
+    },
     heading: {
       color: theme.colors.text.primary,
       fontSize: theme.typography.fontSize['2xl'],
       fontWeight: theme.typography.fontWeight.semibold,
     },
+    inverse: {
+      color: theme.colors.text.inverse,
+      fontSize: theme.typography.fontSize.base,
+      fontWeight: theme.typography.fontWeight.normal,
+    },
   },
 
-  // Input styles
+  // Input styles - Clean borders
   input: {
     backgroundColor: theme.colors.background.secondary,
     borderWidth: 1,
-    borderColor: theme.colors.border.light,
+    borderColor: theme.colors.border.medium,
     borderRadius: theme.layout.component.radiusMedium,
     paddingVertical: theme.spacing.component.inputMedium.vertical,
     paddingHorizontal: theme.spacing.component.inputMedium.horizontal,
@@ -152,30 +203,41 @@ export const createStyles = (theme: Theme) => ({
     minHeight: theme.layout.component.inputMedium,
   },
 
-  // Financial specific styles
+  // Input focused state
+  inputFocused: {
+    borderColor: theme.colors.border.focus, // Black border on focus
+    borderWidth: 2,
+  },
+
+  // Financial specific styles - Minimal colors
   financial: {
     balance: {
       fontSize: theme.typography.textStyles.balance.fontSize,
       fontWeight: theme.typography.textStyles.balance.fontWeight,
-      color: theme.colors.financial.balance,
+      color: theme.colors.financial.balance, // Pure black
     },
-    income: {
-      color: theme.colors.financial.income,
+    positive: {
+      color: theme.colors.financial.positive, // Green - utility only
       fontSize: theme.typography.textStyles.amount.fontSize,
       fontWeight: theme.typography.textStyles.amount.fontWeight,
     },
-    expense: {
-      color: theme.colors.financial.expense,
+    negative: {
+      color: theme.colors.financial.negative, // Red - utility only
+      fontSize: theme.typography.textStyles.amount.fontSize,
+      fontWeight: theme.typography.textStyles.amount.fontWeight,
+    },
+    neutral: {
+      color: theme.colors.financial.neutral, // Black
       fontSize: theme.typography.textStyles.amount.fontSize,
       fontWeight: theme.typography.textStyles.amount.fontWeight,
     },
   },
 
-  // Status styles
+  // Status styles - Minimal utility colors
   status: {
     pending: {
-      backgroundColor: theme.colors.semantic.warningLight,
-      color: theme.colors.semantic.warning,
+      backgroundColor: theme.colors.background.tertiary, // Light gray bg
+      color: theme.colors.status.pending, // Gray text
       paddingHorizontal: theme.spacing.sm,
       paddingVertical: theme.spacing.xs,
       borderRadius: theme.layout.component.radiusSmall,
@@ -183,8 +245,8 @@ export const createStyles = (theme: Theme) => ({
       fontWeight: theme.typography.fontWeight.medium,
     },
     completed: {
-      backgroundColor: theme.colors.semantic.successLight,
-      color: theme.colors.semantic.success,
+      backgroundColor: theme.colors.semantic.successLight, // Very subtle green
+      color: theme.colors.semantic.success, // Green text - utility
       paddingHorizontal: theme.spacing.sm,
       paddingVertical: theme.spacing.xs,
       borderRadius: theme.layout.component.radiusSmall,
@@ -192,8 +254,17 @@ export const createStyles = (theme: Theme) => ({
       fontWeight: theme.typography.fontWeight.medium,
     },
     failed: {
-      backgroundColor: theme.colors.semantic.errorLight,
-      color: theme.colors.semantic.error,
+      backgroundColor: theme.colors.semantic.errorLight, // Very subtle red
+      color: theme.colors.semantic.error, // Red text - utility
+      paddingHorizontal: theme.spacing.sm,
+      paddingVertical: theme.spacing.xs,
+      borderRadius: theme.layout.component.radiusSmall,
+      fontSize: theme.typography.fontSize.sm,
+      fontWeight: theme.typography.fontWeight.medium,
+    },
+    processing: {
+      backgroundColor: theme.colors.background.quaternary, // Darker gray bg
+      color: theme.colors.status.processing, // Dark gray text
       paddingHorizontal: theme.spacing.sm,
       paddingVertical: theme.spacing.xs,
       borderRadius: theme.layout.component.radiusSmall,
@@ -201,11 +272,27 @@ export const createStyles = (theme: Theme) => ({
       fontWeight: theme.typography.fontWeight.medium,
     },
   },
+
+  // Divider styles
+  divider: {
+    height: 1,
+    backgroundColor: theme.colors.border.divider,
+  },
+
+  dividerMedium: {
+    height: 1,
+    backgroundColor: theme.colors.border.light,
+  },
+
+  dividerStrong: {
+    height: 1,
+    backgroundColor: theme.colors.border.medium,
+  },
 });
 
-// Screen specific styles
+// Screen specific styles - Minimal design
 export const createScreenStyles = (theme: Theme) => ({
-  // Login/Register screens
+  // Login/Register screens - Clean and minimal
   auth: {
     container: {
       flex: 1,
@@ -228,43 +315,70 @@ export const createScreenStyles = (theme: Theme) => ({
     },
   },
 
-  // Dashboard screen
+  // Dashboard screen - Pure white with black accents
   dashboard: {
     container: {
       flex: 1,
       backgroundColor: theme.colors.background.primary,
     },
     header: {
-      backgroundColor: theme.colors.primary.main,
+      backgroundColor: theme.colors.background.primary, // White header
       paddingTop: theme.spacing.screen.top,
       paddingHorizontal: theme.spacing.screen.horizontal,
       paddingBottom: theme.spacing.lg,
+      borderBottomWidth: 1,
+      borderBottomColor: theme.colors.border.light,
     },
     balanceCard: {
       backgroundColor: theme.colors.background.primary,
       margin: theme.spacing.md,
       borderRadius: theme.layout.component.radiusLarge,
       padding: theme.spacing.lg,
-      shadowColor: theme.colors.shadow.colored,
-      shadowOffset: { width: 0, height: 4 },
-      shadowOpacity: 0.15,
-      shadowRadius: 8,
-      elevation: 8,
+      borderWidth: 1,
+      borderColor: theme.colors.border.light,
+      shadowColor: theme.colors.shadow.dark,
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 1,
+      shadowRadius: 4,
+      elevation: 4,
     },
   },
 
-  // Transaction screens
+  // Transaction screens - Clean list design
   transaction: {
     listItem: {
       backgroundColor: theme.colors.background.primary,
       paddingVertical: theme.spacing.md,
       paddingHorizontal: theme.spacing.screen.horizontal,
       borderBottomWidth: 1,
-      borderBottomColor: theme.colors.border.light,
+      borderBottomColor: theme.colors.border.divider,
     },
     amount: {
       fontSize: theme.typography.textStyles.amount.fontSize,
       fontWeight: theme.typography.textStyles.amount.fontWeight,
+    },
+  },
+
+  // Modal styles - Clean overlay
+  modal: {
+    overlay: {
+      flex: 1,
+      backgroundColor: theme.colors.background.overlay,
+      justifyContent: 'center' as const,
+      alignItems: 'center' as const,
+      paddingHorizontal: theme.spacing.lg,
+    },
+    container: {
+      backgroundColor: theme.colors.background.primary,
+      borderRadius: theme.layout.component.radiusLarge,
+      padding: theme.spacing.lg,
+      maxWidth: '90%',
+      width: '100%',
+      shadowColor: theme.colors.shadow.strong,
+      shadowOffset: { width: 0, height: 4 },
+      shadowOpacity: 1,
+      shadowRadius: 8,
+      elevation: 8,
     },
   },
 });

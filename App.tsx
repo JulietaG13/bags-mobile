@@ -1,13 +1,36 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import WelcomeScreen from './src/screens/WelcomeScreen';
 import RegisterScreen from './src/screens/RegisterScreen';
 import LoginScreen from './src/screens/LoginScreen';
+import DashboardScreen from './src/screens/DashboardScreen';
+import { AuthProvider } from './src/contexts/AuthContext';
+import { setGlobalUnauthorizedHandler } from './src/config/api';
 
 type ScreenType = 'welcome' | 'register' | 'login' | 'dashboard';
 
 export default function App() {
   const [currentScreen, setCurrentScreen] = useState<ScreenType>('welcome');
+
+  // Handle unauthorized access (401)
+  const handleUnauthorized = () => {
+    console.log('[APP] Unauthorized access detected, redirecting to login');
+    setCurrentScreen('login');
+  };
+
+  // Set up global 401 handler
+  useEffect(() => {
+    const unauthorizedHandler = async () => {
+      handleUnauthorized();
+    };
+    
+    setGlobalUnauthorizedHandler(unauthorizedHandler);
+    
+    // Cleanup on unmount
+    return () => {
+      setGlobalUnauthorizedHandler(null);
+    };
+  }, []);
 
   // Welcome Screen Handlers
   const handleGetStarted = () => {
@@ -23,8 +46,7 @@ export default function App() {
   // Register Screen Handlers
   const handleRegisterSuccess = () => {
     console.log('Registration successful');
-    // Navigate to dashboard (for now, go back to welcome)
-    setCurrentScreen('welcome');
+    setCurrentScreen('dashboard');
   };
 
   const handleBackToWelcomeFromRegister = () => {
@@ -40,8 +62,7 @@ export default function App() {
   // Login Screen Handlers
   const handleLoginSuccess = () => {
     console.log('Login successful');
-    // Navigate to dashboard (for now, go back to welcome)
-    setCurrentScreen('welcome');
+    setCurrentScreen('dashboard');
   };
 
   const handleBackToWelcomeFromLogin = () => {
@@ -54,42 +75,64 @@ export default function App() {
     setCurrentScreen('register');
   };
 
+  // Dashboard Screen Handlers
+  const handleSignOut = () => {
+    console.log('Sign out - redirecting to welcome');
+    setCurrentScreen('welcome');
+  };
+
   // Screen Rendering
-  switch (currentScreen) {
-    case 'register':
-      return (
-        <>
-          <StatusBar style="auto" />
-          <RegisterScreen
-            onRegisterSuccess={handleRegisterSuccess}
-            onBackToWelcome={handleBackToWelcomeFromRegister}
-            onGoToLogin={handleGoToLoginFromRegister}
-          />
-        </>
-      );
+  const renderScreen = () => {
+    switch (currentScreen) {
+      case 'dashboard':
+        return (
+          <>
+            <StatusBar style="auto" />
+            <DashboardScreen onSignOut={handleSignOut} />
+          </>
+        );
 
-    case 'login':
-      return (
-        <>
-          <StatusBar style="auto" />
-          <LoginScreen
-            onLoginSuccess={handleLoginSuccess}
-            onBackToWelcome={handleBackToWelcomeFromLogin}
-            onGoToRegister={handleGoToRegisterFromLogin}
-          />
-        </>
-      );
+      case 'register':
+        return (
+          <>
+            <StatusBar style="auto" />
+            <RegisterScreen
+              onRegisterSuccess={handleRegisterSuccess}
+              onBackToWelcome={handleBackToWelcomeFromRegister}
+              onGoToLogin={handleGoToLoginFromRegister}
+            />
+          </>
+        );
 
-    case 'welcome':
-    default:
-      return (
-        <>
-          <StatusBar style="auto" />
-          <WelcomeScreen
-            onGetStarted={handleGetStarted}
-            onSignIn={handleSignIn}
-          />
-        </>
-      );
-  }
+      case 'login':
+        return (
+          <>
+            <StatusBar style="auto" />
+            <LoginScreen
+              onLoginSuccess={handleLoginSuccess}
+              onBackToWelcome={handleBackToWelcomeFromLogin}
+              onGoToRegister={handleGoToRegisterFromLogin}
+            />
+          </>
+        );
+
+      case 'welcome':
+      default:
+        return (
+          <>
+            <StatusBar style="auto" />
+            <WelcomeScreen
+              onGetStarted={handleGetStarted}
+              onSignIn={handleSignIn}
+            />
+          </>
+        );
+    }
+  };
+
+  return (
+    <AuthProvider onUnauthorized={handleUnauthorized}>
+      {renderScreen()}
+    </AuthProvider>
+  );
 } 

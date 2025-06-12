@@ -5,7 +5,12 @@
   },
   "extends": "expo/tsconfig.base",
   "include": [
+    "**/*.ts",
+    "**/*.tsx",
     "wdio.conf.ts",
     "test/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules"
   ]
 }

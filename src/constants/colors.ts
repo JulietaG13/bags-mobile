@@ -1,17 +1,17 @@
 // Color System for Bags Mobile - Minimal Black & White Design
-// Primary colors are black and white, with colored utilities for semantic states
+// Primary colors are black and white, with minimal colored utilities for essential semantic states
 
 export const Colors = {
-  // Primary Brand Colors (Black & White)
+  // Primary Brand Colors (Pure Black & White)
   primary: {
-    main: '#000000',        // Pure black
+    main: '#000000',        // Pure black - main brand color
     dark: '#000000',        // Black for pressed states
-    light: '#333333',       // Dark gray for backgrounds
-    50: '#FAFAFA',          // Very light gray
-    100: '#F5F5F5',         // Light gray
-    200: '#EEEEEE',         // Medium light gray
-    300: '#E0E0E0',         // Medium gray
-    400: '#BDBDBD',         // Medium dark gray
+    light: '#333333',       // Dark gray for subtle variations
+    50: '#FAFAFA',          // Almost white
+    100: '#F5F5F5',         // Very light gray
+    200: '#EEEEEE',         // Light gray
+    300: '#E0E0E0',         // Medium light gray
+    400: '#BDBDBD',         // Medium gray
     500: '#9E9E9E',         // Gray
     600: '#757575',         // Dark gray
     700: '#616161',         // Darker gray
@@ -19,40 +19,40 @@ export const Colors = {
     900: '#212121',         // Almost black
   },
 
-  // Secondary Colors (White & Light Grays)
+  // Secondary Colors (Pure White & Light Grays)
   secondary: {
     main: '#FFFFFF',        // Pure white
-    dark: '#F5F5F5',        // Light gray
-    light: '#FAFAFA',       // Very light gray
-    50: '#FFFFFF',
-    100: '#FAFAFA',
-    200: '#F5F5F5',
-    300: '#EEEEEE',
-    400: '#E0E0E0',
-    500: '#BDBDBD',
-    600: '#9E9E9E',
-    700: '#757575',
-    800: '#616161',
-    900: '#424242',
+    dark: '#F5F5F5',        // Light gray for subtle variations
+    light: '#FAFAFA',       // Almost white
+    50: '#FFFFFF',          // Pure white
+    100: '#FAFAFA',         // Almost white
+    200: '#F5F5F5',         // Very light gray
+    300: '#EEEEEE',         // Light gray
+    400: '#E0E0E0',         // Medium light gray
+    500: '#BDBDBD',         // Medium gray
+    600: '#9E9E9E',         // Gray
+    700: '#757575',         // Dark gray
+    800: '#616161',         // Very dark gray
+    900: '#424242',         // Dark gray
   },
 
-  // Semantic Colors (Keep colors for utility)
+  // Semantic Colors (Minimal utility colors only)
   semantic: {
-    success: '#10B981',     // Green for positive actions
-    warning: '#F59E0B',     // Amber for warnings
-    error: '#EF4444',       // Red for errors
-    info: '#3B82F6',        // Blue for information
+    success: '#10B981',     // Green - keep for positive feedback
+    error: '#EF4444',       // Red - keep for errors/negative feedback
+    warning: '#F59E0B',     // Amber - keep for warnings only
+    info: '#000000',        // Use black instead of blue
     
-    // Light variants
-    successLight: '#D1FAE5',
-    warningLight: '#FEF3C7',
-    errorLight: '#FEE2E2',
-    infoLight: '#DBEAFE',
+    // Light variants - minimal opacity for subtle backgrounds
+    successLight: '#F0FDF4', // Very subtle green tint
+    errorLight: '#FEF2F2',   // Very subtle red tint
+    warningLight: '#FFFBEB', // Very subtle amber tint
+    infoLight: '#FAFAFA',    // Light gray instead of blue
   },
 
-  // Neutral/Gray Scale (Expanded for B&W design)
+  // Neutral/Gray Scale (Primary palette - expanded for B&W design)
   neutral: {
-    white: '#FFFFFF',
+    white: '#FFFFFF',       // Pure white
     50: '#FAFAFA',          // Almost white
     100: '#F5F5F5',         // Very light gray
     200: '#EEEEEE',         // Light gray
@@ -63,82 +63,88 @@ export const Colors = {
     700: '#616161',         // Very dark gray
     800: '#424242',         // Almost black
     900: '#212121',         // Very dark
-    black: '#000000',
+    black: '#000000',       // Pure black
   },
 
-  // Text Colors (Black & White focused)
+  // Text Colors (Pure Black & White focused)
   text: {
-    primary: '#000000',     // Pure black text
-    secondary: '#424242',   // Dark gray text
-    tertiary: '#757575',    // Medium gray text
-    inverse: '#FFFFFF',     // White text for dark backgrounds
-    disabled: '#BDBDBD',    // Light gray for disabled text
-    link: '#000000',        // Black links with underline
+    primary: '#000000',     // Pure black - main text
+    secondary: '#424242',   // Dark gray - secondary text
+    tertiary: '#757575',    // Medium gray - tertiary text
+    inverse: '#FFFFFF',     // Pure white - for dark backgrounds
+    disabled: '#BDBDBD',    // Light gray - disabled text
+    link: '#000000',        // Black links (use underline for distinction)
+    placeholder: '#9E9E9E', // Medium gray for placeholders
   },
 
-  // Background Colors (White & Light Grays)
+  // Background Colors (Pure White & Light Grays)
   background: {
-    primary: '#FFFFFF',     // Pure white background
-    secondary: '#FAFAFA',   // Very light gray background
-    tertiary: '#F5F5F5',    // Light gray for cards and sections
-    overlay: 'rgba(0, 0, 0, 0.5)', // Black overlay
+    primary: '#FFFFFF',     // Pure white - main background
+    secondary: '#FAFAFA',   // Almost white - secondary areas
+    tertiary: '#F5F5F5',    // Light gray - cards and sections
+    quaternary: '#EEEEEE',  // Slightly darker for subtle distinction
+    overlay: 'rgba(0, 0, 0, 0.5)', // Black semi-transparent overlay
+    modal: 'rgba(0, 0, 0, 0.6)',   // Darker overlay for modals
   },
 
-  // Financial Specific Colors (Keep utility colors)
+  // Financial Specific Colors (Keep essential utility colors only)
   financial: {
-    income: '#10B981',      // Green for income/positive
-    expense: '#EF4444',     // Red for expenses/negative
-    neutral: '#757575',     // Gray for neutral transactions
+    positive: '#10B981',    // Green for income/gains (keep utility)
+    negative: '#EF4444',    // Red for expenses/losses (keep utility) 
+    neutral: '#000000',     // Black for neutral amounts
     balance: '#000000',     // Black for balance display
+    pending: '#757575',     // Gray for pending amounts
     
-    // Card types (keep for recognition)
-    visa: '#1A1F71',
-    mastercard: '#FF5F00',
-    amex: '#006FCF',
-    generic: '#757575',
+    // Remove card brand colors - use neutral gray
+    card: '#757575',        // Single gray for all card types
   },
 
-  // Status Colors (Keep utility colors)
+  // Status Colors (Minimal utility colors)
   status: {
-    pending: '#F59E0B',     // Orange for pending
-    completed: '#10B981',   // Green for completed
-    failed: '#EF4444',      // Red for failed
-    cancelled: '#757575',   // Gray for cancelled
+    pending: '#757575',     // Gray for pending (remove orange)
+    completed: '#10B981',   // Green for completed (keep utility)
+    failed: '#EF4444',      // Red for failed (keep utility)
+    cancelled: '#9E9E9E',   // Light gray for cancelled
+    processing: '#424242',  // Dark gray for processing
   },
 
-  // Border Colors (Grays)
+  // Border Colors (Grays only)
   border: {
-    light: '#EEEEEE',       // Light gray borders
-    medium: '#E0E0E0',      // Medium gray borders
-    dark: '#BDBDBD',        // Dark gray borders
-    focus: '#000000',       // Black focus borders
+    light: '#EEEEEE',       // Light gray - subtle borders
+    medium: '#E0E0E0',      // Medium gray - visible borders
+    dark: '#BDBDBD',        // Dark gray - prominent borders
+    focus: '#000000',       // Black - focus states
+    divider: '#F5F5F5',     // Very light gray - subtle dividers
   },
 
-  // Shadow Colors (Black based)
+  // Shadow Colors (Black only)
   shadow: {
-    light: 'rgba(0, 0, 0, 0.05)',
-    medium: 'rgba(0, 0, 0, 0.1)',
-    dark: 'rgba(0, 0, 0, 0.15)',
-    colored: 'rgba(0, 0, 0, 0.15)', // Black shadow instead of colored
+    light: 'rgba(0, 0, 0, 0.03)',   // Very subtle
+    medium: 'rgba(0, 0, 0, 0.06)',  // Subtle
+    dark: 'rgba(0, 0, 0, 0.12)',    // Visible
+    strong: 'rgba(0, 0, 0, 0.20)',  // Strong shadow
   },
 
-  // Gradient Colors (Black to White gradients)
+  // Gradient Colors (Black to White gradients only)
   gradients: {
     primary: ['#000000', '#424242'],      // Black to dark gray
     secondary: ['#FFFFFF', '#F5F5F5'],    // White to light gray
-    sunset: ['#757575', '#BDBDBD'],       // Gray gradient
-    ocean: ['#212121', '#616161'],        // Dark gray gradient
+    subtle: ['#FAFAFA', '#EEEEEE'],       // Very subtle gray gradient
+    reverse: ['#424242', '#000000'],      // Dark gray to black
+    fade: ['rgba(0, 0, 0, 0)', 'rgba(0, 0, 0, 0.1)'], // Transparent to subtle black
   },
 } as const;
 
-// Theme variants for light/dark mode support
+// Light Theme (Default) - Pure black and white
 export const LightTheme = {
   ...Colors,
   background: {
     primary: '#FFFFFF',     // Pure white
-    secondary: '#FAFAFA',   // Very light gray  
+    secondary: '#FAFAFA',   // Almost white
     tertiary: '#F5F5F5',    // Light gray
+    quaternary: '#EEEEEE',  // Slightly darker gray
     overlay: 'rgba(0, 0, 0, 0.5)',
+    modal: 'rgba(0, 0, 0, 0.6)',
   },
   text: {
     primary: '#000000',     // Pure black
@@ -147,16 +153,20 @@ export const LightTheme = {
     inverse: '#FFFFFF',     // White
     disabled: '#BDBDBD',    // Light gray
     link: '#000000',        // Black
+    placeholder: '#9E9E9E', // Medium gray
   },
 };
 
+// Dark Theme - Inverted black and white
 export const DarkTheme = {
   ...Colors,
   background: {
     primary: '#000000',     // Pure black
     secondary: '#212121',   // Very dark gray
     tertiary: '#424242',    // Dark gray
+    quaternary: '#616161',  // Medium dark gray
     overlay: 'rgba(0, 0, 0, 0.8)',
+    modal: 'rgba(0, 0, 0, 0.9)',
   },
   text: {
     primary: '#FFFFFF',     // Pure white
@@ -165,6 +175,13 @@ export const DarkTheme = {
     inverse: '#000000',     // Black
     disabled: '#757575',    // Dark gray
     link: '#FFFFFF',        // White
+    placeholder: '#9E9E9E', // Medium gray
+  },
+  // Keep semantic colors the same - they're utility colors
+  semantic: {
+    ...Colors.semantic,
+    info: '#FFFFFF',        // Use white instead of black in dark mode
+    infoLight: '#424242',   // Dark gray instead of light gray
   },
 };
 
